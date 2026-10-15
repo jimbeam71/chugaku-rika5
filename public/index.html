@@ -1,0 +1,1311 @@
+<title>余裕があれば記述式に挑戦！</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+/* Layout: 1カラムのノート型。上に「書き方の3か条」、下に定番／高得点ねらいの2タブ。各問は 問い→図→記入欄→答え合わせ の縦並び */
+:root{
+  --font-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+  --font-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --bg:#EDF2F4; --surface:#FFFFFF; --surface-2:#F4F8F9; --ink:#14252E; --muted:#4F646D; --line:#C9D6DB;
+  --accent:#0B6B70; --accent-ink:#FFFFFF; --accent-soft:#D5ECED;
+  --mark:#FFC4D8; --ok:#17794A; --ok-soft:#D7EFE2;
+  --glass:#DCEBF1; --water:#A9D6EA; --ethanol:#EFE6B8; --leaf:#3E9B4F; --leaf-pale:#DCE8C8;
+  --flame:#F2A01D; --powder:#FFFFFF; --sponge:#E8C46A; --metal:#B8C2C8; --blue:#2F6FD0; --yellow:#E3C938;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1A20; --surface:#16262D; --surface-2:#1B2D35; --ink:#E5EFF2; --muted:#9BB1B9; --line:#2B414A;
+    --accent:#52C2C6; --accent-ink:#052A2C; --accent-soft:#12393C;
+    --mark:#7A2D4B; --ok:#62D192; --ok-soft:#143A27;
+    --glass:#223D49; --water:#2A5C75; --ethanol:#5A5430; --leaf:#4DB25F; --leaf-pale:#6D7B55;
+    --flame:#F2A01D; --powder:#E8E4D6; --sponge:#B8923A; --metal:#5F6F77; --blue:#5B92EA; --yellow:#E8CF45;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1A20; --surface:#16262D; --surface-2:#1B2D35; --ink:#E5EFF2; --muted:#9BB1B9; --line:#2B414A;
+  --accent:#52C2C6; --accent-ink:#052A2C; --accent-soft:#12393C;
+  --mark:#7A2D4B; --ok:#62D192; --ok-soft:#143A27;
+  --glass:#223D49; --water:#2A5C75; --ethanol:#5A5430; --leaf:#4DB25F; --leaf-pale:#6D7B55;
+  --flame:#F2A01D; --powder:#E8E4D6; --sponge:#B8923A; --metal:#5F6F77; --blue:#5B92EA; --yellow:#E8CF45;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.85;
+  padding-block:20px 56px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:22px;min-width:0}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mk{background:linear-gradient(transparent 58%, var(--mark) 58%)}
+rt{font-size:.55em;font-weight:500}
+
+.top{display:flex;flex-direction:column;gap:6px}
+.back{font-size:14px}
+.eyebrow{font-size:13px;letter-spacing:.14em;color:var(--muted);font-weight:700}
+h1{font-family:var(--font-display);font-size:clamp(30px,8vw,40px);line-height:1.3;margin:0;font-weight:700;text-wrap:balance}
+.lead{margin:0;color:var(--muted)}
+
+.rules{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.rules h2{font-family:var(--font-display);font-size:19px;margin:0 0 6px}
+.rules ol{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:4px}
+.rules li::marker{font-weight:700;color:var(--accent)}
+
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tab{font:inherit;text-align:left;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer;min-height:64px;display:flex;flex-direction:column;gap:0;line-height:1.5}
+.tab b{font-family:var(--font-display);font-size:17px}
+.tab small{color:var(--muted);font-size:13px}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tab[aria-selected="true"] small{color:var(--accent-ink);opacity:.9}
+
+.panel{display:flex;flex-direction:column;gap:18px;min-width:0}
+.panel-intro{margin:0}
+.bar{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.bar .track{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar .fill{height:100%;width:0;background:var(--ok);transition:width .3s}
+@media (prefers-reduced-motion:reduce){.bar .fill{transition:none}}
+
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.q-head{display:flex;align-items:center;gap:10px}
+.q-no{font-family:var(--font-display);font-weight:700;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:1px 10px;font-size:15px}
+.q-field{font-size:13px;color:var(--muted);letter-spacing:.1em}
+.q-text{margin:0;font-size:17px;font-weight:500}
+.fig{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:10px}
+.fig svg{display:block;width:100%;max-width:440px;height:auto;margin:0 auto}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;min-width:420px;font-size:15px;line-height:1.6}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+.tbl th{background:var(--surface-2)}
+.tbl td.num,.tbl th.num{font-variant-numeric:tabular-nums}
+.ans-label{font-size:14px;font-weight:700;color:var(--muted)}
+textarea{width:100%;min-height:5.6rem;font:inherit;font-size:16px;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:8px;padding:10px 12px;resize:vertical}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:inherit;font-size:15px;min-height:44px;padding:8px 16px;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.hint{margin:0;background:var(--accent-soft);border-radius:8px;padding:10px 14px}
+.hint b{display:block;font-size:13px;letter-spacing:.08em;color:var(--accent)}
+.result{display:flex;flex-direction:column;gap:12px;border-top:2px dashed var(--line);padding-top:14px}
+.res-title{font-family:var(--font-display);font-size:18px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.chip{font-size:14px;line-height:1.5;padding:3px 12px;border-radius:999px}
+.chip.hit{background:var(--ok-soft);color:var(--ok);font-weight:700}
+.chip.miss{background:var(--mark);color:var(--ink)}
+.chip.bonus{border:1px dashed var(--line)}
+.model{background:var(--ok-soft);border-radius:8px;padding:10px 14px}
+.model b{display:block;font-size:13px;letter-spacing:.08em;color:var(--ok)}
+.model p{margin:0;font-weight:500}
+.why{background:var(--accent-soft);border-radius:8px;padding:10px 14px}
+.why b{display:block;color:var(--accent);margin-bottom:2px}
+.why p{margin:4px 0;font-size:15px}
+.note{margin:0;font-size:15px}
+.note.small{font-size:14px;color:var(--muted)}
+.grade{display:flex;flex-direction:column;gap:6px}
+.grade-label{font-size:14px;font-weight:700}
+.grade-row{display:flex;flex-wrap:wrap;gap:8px}
+.grade .btn[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--accent-ink);font-weight:700}
+footer{font-size:13px;color:var(--muted)}
+
+/* 図の部品 */
+.s-line{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.s-thin{fill:none;stroke:var(--muted);stroke-width:1.2}
+.s-dash{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 3}
+.s-glass{fill:var(--glass);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.s-glass-n{fill:var(--glass);stroke:none}
+.s-t{font-size:12px;fill:var(--ink);font-family:var(--font-body)}
+.s-tb{font-size:13px;font-weight:700;fill:var(--ink);font-family:var(--font-body)}
+.s-tm{font-size:11px;fill:var(--muted);font-family:var(--font-body)}
+.s-water{fill:var(--water)}
+.s-eth{fill:var(--ethanol)}
+.s-leaf{fill:var(--leaf);stroke:var(--ink);stroke-width:1.5}
+.s-leafp{fill:var(--leaf-pale);stroke:var(--ink);stroke-width:1.5}
+.s-flame{fill:var(--flame)}
+.s-metal{fill:var(--metal);stroke:var(--ink);stroke-width:1.5}
+.s-sponge{fill:var(--sponge);stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.s-block{fill:var(--glass);stroke:var(--ink);stroke-width:2}
+.s-acc{fill:var(--accent);stroke:var(--ink);stroke-width:1.5}
+.s-box{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.s-trace{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="back" href="https://chugaku.senta1111.workers.dev/" target="_blank" rel="noopener">← 中学の自習サイト トップへ</a>
+    <div class="eyebrow">中学理科　しあげ</div>
+    <h1>余裕があれば記述式に挑戦！</h1>
+    <p class="lead">理由を聞かれたら、点がとれる書き方がある。書く → 答え合わせ → 自分で ○△× をつける。</p>
+  </header>
+
+  <section class="rules" aria-labelledby="rules-h">
+    <h2 id="rules-h">書き方の3か条</h2>
+    <ol>
+      <li>聞かれたことだけに答える。「理由」なら、文末は<span class="mk">「〜から」「〜ため」</span>。</li>
+      <li>採点ポイントの<span class="mk">キーワード</span>を入れる。1つ入るごとに点がつく。</li>
+      <li>1文で短く書く。わからなくても<span class="mk">空欄にしない</span>。近いことを書けば点がつくことがある。</li>
+    </ol>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="問題のしゅるい">
+    <button class="tab" role="tab" id="tab-t" aria-selected="true" aria-controls="panel-t" data-set="t"><b>定番</b><small>ぜったいおとせない　32問</small></button>
+    <button class="tab" role="tab" id="tab-h" aria-selected="false" aria-controls="panel-h" data-set="h"><b>高得点ねらい</b><small>表やグラフから書く　16問</small></button>
+  </div>
+
+  <section class="panel" id="panel-t" role="tabpanel" aria-labelledby="tab-t">
+    <p class="panel-intro">どの学校のテストにも出る型。ここは全員、満点をとりたい。</p>
+    <div class="bar" data-bar="t"><span class="bar-text">○ 0 / 4</span><span class="track"><span class="fill"></span></span></div>
+    <div class="qlist" data-list="t" style="display:flex;flex-direction:column;gap:18px"></div>
+  </section>
+
+  <section class="panel" id="panel-h" role="tabpanel" aria-labelledby="tab-h" hidden>
+    <p class="panel-intro">表や図を読んで、ことばを組み合わせて書く問題。平均より上の点は、ここで差がつく。</p>
+    <div class="bar" data-bar="h"><span class="bar-text">○ 0 / 4</span><span class="track"><span class="fill"></span></span></div>
+    <div class="qlist" data-list="h" style="display:flex;flex-direction:column;gap:18px"></div>
+  </section>
+
+  <footer>記録はこの端末のブラウザに保存されます。消したいときは、各問題の「書きなおす」を押してください。</footer>
+</div>
+
+<script>
+/*DATA_START*/
+function seismo(){
+  const sx=5,x0=22;
+  const rows=[{y:44,p:10,s:20,n:'A'},{y:116,p:20,s:40,n:'B'}];
+  let o='<svg viewBox="0 0 340 204" role="img" aria-label="A地点とB地点の地震計の記録。小さなゆれのあとに大きなゆれが来る">';
+  rows.forEach(r=>{
+    const pts=[];
+    for(let x=0;x<=300;x+=1.5){
+      const t=x/sx;let a=0;
+      if(t>=r.p&&t<r.s){a=5*Math.sin(t*11);}
+      else if(t>=r.s){const d=t-r.s;a=24*Math.exp(-d/18)*Math.sin(t*6.5)+3*Math.sin(t*17);}
+      pts.push((x0+x).toFixed(1)+','+(r.y-a).toFixed(1));
+    }
+    const px=x0+r.p*sx,ssx=x0+r.s*sx;
+    o+='<line class="s-thin" x1="'+x0+'" y1="'+r.y+'" x2="'+(x0+300)+'" y2="'+r.y+'"/>';
+    o+='<polyline class="s-trace" points="'+pts.join(' ')+'"/>';
+    o+='<line class="s-dash" x1="'+px+'" y1="'+(r.y-32)+'" x2="'+px+'" y2="'+(r.y+30)+'"/>';
+    o+='<line class="s-dash" x1="'+ssx+'" y1="'+(r.y-32)+'" x2="'+ssx+'" y2="'+(r.y+30)+'"/>';
+    o+='<text class="s-tb" x="'+px+'" y="'+(r.y-36)+'" text-anchor="middle">P波</text>';
+    o+='<text class="s-tb" x="'+ssx+'" y="'+(r.y-36)+'" text-anchor="middle">S波</text>';
+    o+='<text class="s-tb" x="2" y="'+(r.y+4)+'">'+r.n+'</text>';
+  });
+  o+='<line class="s-line" x1="'+x0+'" y1="168" x2="'+(x0+300)+'" y2="168"/>';
+  for(let i=0;i<=6;i++){
+    const x=x0+i*50;
+    o+='<line class="s-line" x1="'+x+'" y1="168" x2="'+x+'" y2="173"/>';
+    o+='<text class="s-t" x="'+x+'" y="187" text-anchor="middle">'+(i*10)+'</text>';
+  }
+  o+='<text class="s-tm" x="'+(x0+150)+'" y="201" text-anchor="middle">10時00分から何秒あとか</text>';
+  return o+'</svg>';
+}
+function tubes3(){
+  const xs=[70,170,270],cols=['var(--blue)','var(--yellow)','var(--yellow)'],names=['A','B','C'];
+  let o='<svg viewBox="0 0 340 160" role="img" aria-label="試験管A、B、Cの実験後の色。Aは青、BとCは黄色">';
+  xs.forEach((x,i)=>{
+    o+='<path class="s-glass-n" d="M'+(x-18)+',22 V112 a18,18 0 0 0 36,0 V22 Z"/>';
+    o+='<path d="M'+(x-18)+',50 H'+(x+18)+' V112 a18,18 0 0 1 -36,0 Z" fill="'+cols[i]+'" opacity=".85"/>';
+    if(i<2){
+      o+='<path d="M'+(x-7)+',108 q-5,-18 2,-36 M'+(x+4)+',108 q6,-16 0,-32" fill="none" stroke="var(--leaf)" stroke-width="3.2" stroke-linecap="round"/>';
+    }
+    if(i===1){ o+='<rect class="s-metal" x="'+(x-21)+'" y="46" width="42" height="84" rx="9" opacity=".92"/>'; }
+    o+='<path class="s-line" d="M'+(x-18)+',22 V112 a18,18 0 0 0 36,0 V22"/>';
+    o+='<text class="s-tb" x="'+x+'" y="152" text-anchor="middle">'+names[i]+'</text>';
+    o+= i===1 ? '<text class="s-t" x="'+x+'" y="14" text-anchor="middle">アルミホイル</text>' : '<text class="s-t" x="'+x+'" y="14" text-anchor="middle">光 ↓</text>';
+  });
+  return o+'</svg>';
+}
+const Q=[
+{id:'t1',set:'t',no:'定番 1',field:'化学',
+ prompt:'<ruby>炭酸水素<rt>たんさんすいそ</rt></ruby>ナトリウムを試験管に入れて加熱するとき、試験管の口を少し下げておく。その理由を答えなさい。',
+ fig:'<svg viewBox="0 0 340 190" role="img" aria-label="試験管の口を少し下げて、炭酸水素ナトリウムを加熱している図"><defs><clipPath id="c1"><path d="M200,-20 H0 A20,20 0 0 0 0,20 H200 Z"/></clipPath></defs><rect class="s-glass" x="40" y="134" width="36" height="22" rx="4"/><path class="s-flame" d="M58,132 C46,116 54,108 58,94 C62,108 70,116 58,132 Z"/><g transform="translate(40,60) rotate(12)"><path class="s-glass-n" d="M200,-20 H0 A20,20 0 0 0 0,20 H200 Z"/><rect x="-20" y="2" width="64" height="22" fill="var(--powder)" clip-path="url(#c1)"/><circle cx="150" cy="15" r="3.2" fill="var(--blue)" opacity=".7"/><circle cx="165" cy="16" r="3.2" fill="var(--blue)" opacity=".7"/><circle cx="180" cy="14" r="3.2" fill="var(--blue)" opacity=".7"/><circle cx="206" cy="24" r="3.6" fill="var(--blue)" opacity=".7"/><path class="s-line" d="M200,-20 H0 A20,20 0 0 0 0,20 H200"/></g><text class="s-t" x="8" y="22">炭酸水素ナトリウム</text><path class="s-thin" d="M50,30 L47,70"/><text class="s-t" x="214" y="44">口は少し下げる</text><path class="s-thin" d="M250,50 L241,84"/><text class="s-t" x="150" y="176">発生した水</text><path class="s-thin" d="M190,162 L198,118"/></svg>',
+ template:'（　　）が（　　）部分に流れて、試験管が（　　）のを防ぐため。',
+ groups:[
+  {label:'「水」が出ること',re:/水/},
+  {label:'試験管が割れるのを防ぐ',re:/割れ|われ|こわれ|壊れ|ひび/},
+  {label:'水が加熱した部分に流れる',re:/流れ|加熱|熱い|熱した|底/,bonus:true}],
+ model:'発生した水が加熱した部分に流れて、試験管が割れるのを防ぐため。',
+ point:'「水」と「割れる」の2つがそろえば主な点。「加熱した部分に流れる」まで書けると満点になりやすい。',
+ trap:'ただし「口を下げるとよいから」「安全のため」だけでは点がつきにくい。何が起こるのか（水が流れて割れる）まで書く。'},
+{id:'t2',set:'t',no:'定番 2',field:'生物',
+ prompt:'光合成の実験で、葉のデンプンを調べるとき、ヨウ素液につける前に、葉をあたためたエタノールに入れる。その理由を答えなさい。',
+ fig:'<svg viewBox="0 0 340 170" role="img" aria-label="湯の中の小さなビーカーのエタノールに葉を入れる図。右は、緑の葉が白っぽくなる図"><defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/></marker></defs><rect class="s-water" x="22" y="72" width="116" height="74"/><path class="s-line" d="M20,40 V140 a8,8 0 0 0 8,8 H132 a8,8 0 0 0 8,-8 V40"/><rect class="s-eth" x="52" y="82" width="56" height="40"/><path class="s-line" d="M50,56 V118 a6,6 0 0 0 6,6 H104 a6,6 0 0 0 6,-6 V56"/><ellipse class="s-leaf" cx="80" cy="104" rx="20" ry="8" transform="rotate(-20 80 104)"/><text class="s-t" x="26" y="140">湯</text><text class="s-t" x="66" y="140">葉</text><text class="s-t" x="146" y="70">あたためた</text><text class="s-t" x="146" y="86">エタノール</text><path class="s-thin" d="M150,92 L110,98"/><ellipse class="s-leaf" cx="282" cy="40" rx="36" ry="14"/><text class="s-t" x="282" y="72" text-anchor="middle">もとの葉（緑色）</text><path class="s-line" d="M282,80 V104" marker-end="url(#ar2)"/><ellipse class="s-leafp" cx="282" cy="126" rx="36" ry="14"/><text class="s-t" x="282" y="158" text-anchor="middle">色がぬけて白っぽい</text></svg>',
+ template:'葉の（　　）をぬいて、（　　）の色の変化を見やすくするため。',
+ groups:[
+  {label:'葉の緑色（色）をぬく',re:/緑|色|脱色|葉緑素|クロロフィル/},
+  {label:'変化を見やすくする',re:/見やす|わかりやす|分かりやす|はっきり/},
+  {label:'ヨウ素液（デンプン）の反応',re:/ヨウ素|デンプン|でんぷん/,bonus:true}],
+ model:'葉の緑色をぬいて、ヨウ素液による色の変化を見やすくするため。',
+ point:'「色をぬく」と「見やすくする」の2つが必要。ヨウ素液で青紫色に変わったのを見分けるのが目的。',
+ trap:'ただし「ヨウ素液がしみこみやすくなるから」は×。しみこみやすさのためではなく、色を見分けるため。'},
+{id:'t3',set:'t',no:'定番 3',field:'物理',
+ prompt:'電流の大きさが予想できないとき、電流計の−（マイナス）端子は、はじめに5Aの端子につなぐ。その理由を答えなさい。',
+ fig:'<svg viewBox="0 0 340 200" role="img" aria-label="電流計。下にプラス端子と、マイナス端子の5A、500mA、50mAがある"><rect class="s-box" x="70" y="8" width="200" height="164" rx="14"/><path class="s-line" d="M110,92 A60,60 0 0 1 230,92"/><line class="s-line" x1="170" y1="92" x2="204" y2="52"/><circle cx="170" cy="92" r="5" fill="var(--ink)"/><text class="s-tb" x="170" y="34" text-anchor="middle">A</text><circle class="s-line" cx="100" cy="128" r="9"/><circle class="s-acc" cx="148" cy="128" r="9"/><circle class="s-line" cx="196" cy="128" r="9"/><circle class="s-line" cx="244" cy="128" r="9"/><text class="s-t" x="100" y="152" text-anchor="middle">＋</text><text class="s-t" x="148" y="152" text-anchor="middle">−5A</text><text class="s-t" x="196" y="152" text-anchor="middle">−500mA</text><text class="s-t" x="244" y="152" text-anchor="middle">−50mA</text><path class="s-line" d="M148,186 V178"/><text class="s-t" x="148" y="198" text-anchor="middle" dy="-0">はじめにつなぐ端子</text></svg>',
+ template:'大きな電流が流れても、（　　）が（　　）て、電流計が（　　）ないようにするため。',
+ groups:[
+  {label:'針がふれる（ふり切れる）',re:/針|はり|ふり切|振り切|ふれ|振れ/},
+  {label:'電流計がこわれるのを防ぐ',re:/こわれ|壊れ|故障|破損|傷/},
+  {label:'大きな電流が流れても',re:/大きい|大きな|大電流|強い|大量/,bonus:true}],
+ model:'大きな電流が流れても、針がふり切れて電流計がこわれないようにするため。',
+ point:'「針がふり切れる」「こわれる」のどちらかが入れば部分点。両方で満点。',
+ trap:'ただし「正確にはかるため」は×。5Aから始めるのは、正確さではなく電流計を守るため。そのあと針が小さくしかふれなければ、500mA、50mAの順に小さい端子へかえていく。'},
+{id:'t4',set:'t',no:'定番 4',field:'生物',
+ prompt:'だ液のはたらきを調べる実験で、試験管Bには、だ液のかわりに水を入れた。水を入れたBを用意するのはなぜか。',
+ fig:'<svg viewBox="0 0 340 190" role="img" aria-label="湯の中の試験管A（デンプン溶液とだ液）と試験管B（デンプン溶液と水）"><rect class="s-water" x="32" y="94" width="276" height="62"/><path class="s-line" d="M30,74 V148 a8,8 0 0 0 8,8 H302 a8,8 0 0 0 8,-8 V74"/><path class="s-glass-n" d="M90,24 V108 a20,20 0 0 0 40,0 V24 Z"/><path d="M90,56 H130 V108 a20,20 0 0 1 -40,0 Z" fill="var(--ethanol)"/><path class="s-line" d="M90,24 V108 a20,20 0 0 0 40,0 V24"/><path class="s-glass-n" d="M210,24 V108 a20,20 0 0 0 40,0 V24 Z"/><path d="M210,56 H250 V108 a20,20 0 0 1 -40,0 Z" fill="var(--ethanol)"/><path class="s-line" d="M210,24 V108 a20,20 0 0 0 40,0 V24"/><text class="s-tb" x="110" y="14" text-anchor="middle">A</text><text class="s-tb" x="230" y="14" text-anchor="middle">B</text><text class="s-t" x="170" y="140" text-anchor="middle">体温ぐらいの湯</text><text class="s-t" x="110" y="176" text-anchor="middle">デンプン溶液＋だ液</text><text class="s-t" x="230" y="176" text-anchor="middle">デンプン溶液＋水</text></svg>',
+ table:'<div class="tbl"><table><thead><tr><th>試験管</th><th>入れたもの</th><th>ヨウ素液を加えた結果</th></tr></thead><tbody><tr><td>A</td><td>デンプン溶液＋だ液</td><td>色が変化しなかった</td></tr><tr><td>B</td><td>デンプン溶液＋水</td><td>青紫色に変化した</td></tr></tbody></table></div>',
+ template:'（　　）のはたらきで変化したことを、（　　）て確かめるため。',
+ groups:[
+  {label:'「だ液」のはたらき',re:/だ液|唾液|だえき/},
+  {label:'比べる（確かめる）',re:/比べ|比較|確か|たしか|対照|ちがい|違い/},
+  {label:'デンプンが変化した',re:/デンプン|でんぷん|変化|かわ|変わ/,bonus:true}],
+ model:'だ液のはたらきでデンプンが変化したことを、水を入れたものと比べて確かめるため。',
+ point:'「だ液」と「比べる（確かめる）」の2つが必要。条件を1つだけ変えて比べるのが、この実験の型。',
+ trap:'ただし「温度をそろえるため」は別の理由。この問題は、だ液を入れたAと入れないBを比べる、という話。'},
+{id:'h1',set:'h',no:'高得点 1',field:'化学',
+ prompt:'アンモニアは、水上置換法ではなく<ruby>上方置換法<rt>じょうほうちかんほう</rt></ruby>で集める。その理由を、「水」「空気」という2つのことばを使って答えなさい。',
+ fig:'<svg viewBox="0 0 340 200" role="img" aria-label="さかさまにしたフラスコに、下から管でアンモニアを入れて集める図（上方置換法）"><defs><marker id="ar5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/></marker></defs><path class="s-glass-n" d="M222,142 V110 A42,42 0 1 1 238,110 V142 Z"/><path class="s-line" d="M222,142 V110 A42,42 0 1 1 238,110 V142"/><path d="M230,170 V86" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/><path d="M40,170 H230" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/><path class="s-line" d="M16,128 V168 a16,16 0 0 0 32,0 V128"/><text class="s-t" x="8" y="118">アンモニアが発生</text><path class="s-line" d="M214,148 V158" marker-end="url(#ar5)"/><path class="s-line" d="M246,148 V158" marker-end="url(#ar5)"/><text class="s-t" x="262" y="152">空気がおし出される</text><text class="s-t" x="230" y="44" text-anchor="middle">アンモニア</text><text class="s-tm" x="230" y="60" text-anchor="middle">上にたまる</text></svg>',
+ template:'アンモニアは（　　）に（　　）、空気より（　　）から。',
+ groups:[
+  {label:'水にとけやすい',re:/水.{0,8}(とけ|溶け|溶)/},
+  {label:'空気より軽い（密度が小さい）',re:/空気.{0,10}(軽|小さ|低)|密度.{0,8}小/},
+  {label:'「非常に」「よく」とけやすい',re:/非常|よく|とても|多量|大量|やすい/,bonus:true}],
+ model:'アンモニアは水に非常にとけやすく、空気より軽い（密度が小さい）から。',
+ point:'理由は2つで、両方が必要。「水にとける」→水上置換法は使えない。「空気より軽い」→上方置換法が使える。',
+ trap:'ただし「軽いから」だけでは、水上置換法を使わない理由がぬけて減点される。「水にとけるから」だけでも、上方置換法の理由がない。'},
+{id:'h2',set:'h',no:'高得点 2',field:'生物',
+ prompt:'BTB溶液に息をふきこんで黄色にしたものを、3本の試験管A〜Cに入れた。A・Bにはオオカナダモを入れ、Bだけをアルミホイルで包んだ。しばらく光に当てると、下の表のようになった。Aの液が青色に変化した理由を、「光合成」「二酸化炭素」という2つのことばを使って答えなさい。',
+ fig:'tubes3()',
+ table:'<div class="tbl"><table><thead><tr><th>試験管</th><th>オオカナダモ</th><th>光</th><th>実験後の液の色</th></tr></thead><tbody><tr><td>A</td><td>入れる</td><td>当てる</td><td>青色</td></tr><tr><td>B</td><td>入れる</td><td>アルミホイルで包む（当てない）</td><td>黄色</td></tr><tr><td>C</td><td>入れない</td><td>当てる</td><td>黄色</td></tr></tbody></table></div>',
+ template:'オオカナダモが（　　）を行い、水中の（　　）を（　　）から。',
+ groups:[
+  {label:'光合成を行った',re:/光合成/},
+  {label:'二酸化炭素',re:/二酸化炭素|CO2/},
+  {label:'吸収した（使った・減った）',re:/吸収|使|減|取り込|とりこ|消費|少な|とり入れ|取り入れ/}],
+ model:'オオカナダモが光合成を行い、水中の二酸化炭素を吸収した（使った）ので、二酸化炭素が減ったから。',
+ point:'BTB溶液は、二酸化炭素が多いと黄色、少ないと青色。「二酸化炭素が減った」が答えの中心。BとCを見ると、光と植物の両方がそろったAだけが変化している。',
+ trap:'ただし「酸素が出たから」は×。BTB溶液は酸素には反応しない。「光合成をしたから」だけでも、液の色と結びつかず減点される。'},
+{id:'h3',set:'h',no:'高得点 3',field:'物理',
+ prompt:'同じ直方体を、面Aを下にしてスポンジにのせたときと、面Bを下にしてのせたときで、へこみ方がちがった。Bのほうが深くへこんだ理由を、「面積」「圧力」という2つのことばを使って答えなさい。',
+ fig:'<svg viewBox="0 0 340 196" role="img" aria-label="同じ直方体を、広い面Aを下にした図（へこみが浅い）と、せまい面Bを下にした図（へこみが深い）"><path class="s-sponge" d="M10,110 H40 V114 H130 V110 H160 V150 H10 Z"/><rect class="s-block" x="40" y="84" width="90" height="30"/><text class="s-t" x="85" y="78" text-anchor="middle">6cm</text><text class="s-t" x="136" y="103">2cm</text><text class="s-tb" x="85" y="170" text-anchor="middle">A（広い面が下）</text><path class="s-sponge" d="M180,110 H227 V124 H272 V110 H330 V150 H180 Z"/><rect class="s-block" x="227" y="34" width="45" height="90"/><text class="s-t" x="249" y="28" text-anchor="middle">3cm</text><text class="s-t" x="278" y="82">6cm</text><text class="s-tb" x="255" y="170" text-anchor="middle">B（せまい面が下）</text></svg>',
+ table:'<div class="tbl"><table><thead><tr><th>置き方</th><th>下にした面の辺</th><th>スポンジのへこみ</th></tr></thead><tbody><tr><td>A</td><td>3cm × 6cm</td><td>浅い</td></tr><tr><td>B</td><td>2cm × 3cm</td><td>深い</td></tr></tbody></table></div>',
+ template:'物体が面をおす力は（　　）だが、Bのほうが（　　）が（　　）ので、（　　）が大きくなるから。',
+ groups:[
+  {label:'面積',re:/面積/},
+  {label:'面積が小さい（せまい）',re:/小さ|せま|狭/},
+  {label:'圧力',re:/圧力/},
+  {label:'圧力が大きい',re:/大き|強|高|増/},
+  {label:'力（重さ）は同じ',re:/同じ|変わら|かわら|等し/,bonus:true}],
+ model:'物体が面をおす力は同じだが、Bのほうが力がはたらく面積が小さいので、圧力が大きくなるから。',
+ point:'圧力 = 力 ÷ 面積。力が同じなら、面積が小さいほど圧力が大きい。「面積が小さい」→「圧力が大きい」の順でつなぐ。',
+ trap:'ただし「Bのほうが重いから」は×。同じ直方体なので、力（重さ）は同じ。ちがうのは面積だけ。'},
+{id:'h4',set:'h',no:'高得点 4',field:'地学',
+ prompt:'ある地震を、A地点とB地点で観測した。下の図は地震計の記録、表は P波とS波がとどいた時刻である。A地点とB地点のうち、震源に近いのはどちらか。「初期微動継続時間」ということばを使って、理由もあわせて答えなさい。',
+ fig:'seismo()',
+ table:'<div class="tbl"><table><thead><tr><th>地点</th><th>P波がとどいた時刻</th><th>S波がとどいた時刻</th></tr></thead><tbody><tr><td>A</td><td class="num">10時00分10秒</td><td class="num">10時00分20秒</td></tr><tr><td>B</td><td class="num">10時00分20秒</td><td class="num">10時00分40秒</td></tr></tbody></table></div>',
+ template:'（　）地点。初期微動継続時間が（　　）ほど、震源に（　　）から。',
+ groups:[
+  {label:'答えは A',re:/A/},
+  {label:'初期微動継続時間',re:/初期微動継続時間/},
+  {label:'短い（Aのほうが短い）',re:/短/},
+  {label:'震源に近いほど短い',re:/近/,bonus:true}],
+ model:'A地点。A地点のほうが初期微動継続時間が短く、初期微動継続時間は震源に近いほど短くなるから。',
+ point:'初期微動継続時間 = S波がとどいた時刻 − P波がとどいた時刻。Aは10秒、Bは20秒。短いAが震源に近い。数字を書くと説得力が上がる。',
+ trap:'ただし「P波が先にとどいたから」は×。どの地点でもP波が先にとどく。比べるのは「時間の差」。'},
+{id:'t5',set:'t',no:'定番 5',field:'化学',
+ prompt:'水の<ruby>電気分解<rt>でんきぶんかい</rt></ruby>の実験では、水にうすい<ruby>水酸化<rt>すいさんか</rt></ruby>ナトリウムをとかしてから電流を流す。水酸化ナトリウムをとかす理由を答えなさい。',
+ fig:'<svg viewBox="0 0 340 214" role="img" aria-label="水の電気分解。左の陰極に水素が2、右の陽極に酸素が1の体積でたまる"><path class="s-glass-n" d="M60,70 V170 a8,8 0 0 0 8,8 H272 a8,8 0 0 0 8,-8 V70 Z"/><rect class="s-water" x="62" y="100" width="216" height="76"/><path class="s-line" d="M60,70 V170 a8,8 0 0 0 8,8 H272 a8,8 0 0 0 8,-8 V70"/><rect class="s-water" x="105" y="104" width="40" height="46"/><rect class="s-water" x="195" y="70" width="40" height="80"/><path class="s-line" d="M105,150 V56 a20,20 0 0 1 40,0 V150"/><path class="s-line" d="M195,150 V56 a20,20 0 0 1 40,0 V150"/><path d="M125,172 V118 M215,172 V118" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><path class="s-line" d="M125,172 V196 H146 M215,172 V196 H194"/><rect class="s-box" x="146" y="186" width="48" height="20" rx="3"/><text class="s-t" x="170" y="200" text-anchor="middle">電源</text><text class="s-t" x="125" y="22" text-anchor="middle">−極 水素</text><text class="s-t" x="215" y="22" text-anchor="middle">＋極 酸素</text><text class="s-tb" x="125" y="84" text-anchor="middle">体積 2</text><text class="s-tb" x="215" y="62" text-anchor="middle">体積 1</text></svg>',
+ template:'水に（　　）が流れやすくなるようにするため。',
+ groups:[
+  {label:'電流（電気）',re:/電流|電気/},
+  {label:'流れやすくする（通しやすくする）',re:/流れ|通/},
+  {label:'純粋な水は電流が流れにくい',re:/流れにく|通しにく|純粋|純水|ほとんど流れ/,bonus:true}],
+ model:'純粋な水は電流が流れにくいので、電流を流れやすくするため。',
+ point:'答えの中心は「電流を流れやすくする」。純粋な水は、ほとんど電流を通さない。',
+ trap:'ただし「水が分解しやすくなるから」は×。水酸化ナトリウム自体は分解されず、電流を通りやすくするだけ。'},
+{id:'t6',set:'t',no:'定番 6',field:'地学',
+ prompt:'火山A・Bの形と、ふき出した溶岩の色を調べた。Bはもり上がった形をしている。Bがもり上がった形になる理由を、「ねばりけ」ということばを使って答えなさい。',
+ fig:'<svg viewBox="0 0 340 172" role="img" aria-label="左は傾斜がゆるやかな火山A、右はもり上がった形の火山B"><path d="M10,140 C50,112 70,102 90,100 C110,102 130,112 170,140 Z" fill="#555" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M190,140 C200,100 215,70 255,64 C295,70 310,100 320,140 Z" fill="#E8E4D8" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path class="s-line" d="M0,140 H340"/><text class="s-tb" x="90" y="162" text-anchor="middle">A　ゆるやかな形</text><text class="s-tb" x="255" y="162" text-anchor="middle">B　もり上がった形</text></svg>',
+ table:'<div class="tbl"><table><thead><tr><th>火山</th><th>形</th><th>溶岩の色</th></tr></thead><tbody><tr><td>A</td><td>ゆるやか</td><td>黒っぽい</td></tr><tr><td>B</td><td>もり上がっている</td><td>白っぽい</td></tr></tbody></table></div>',
+ template:'マグマの（　　）が強く、（　　）ので、火口の近くで固まるから。',
+ groups:[
+  {label:'ねばりけ',re:/ねばり/},
+  {label:'ねばりけが強い',re:/強|大き|高/},
+  {label:'流れにくい',re:/流れにく|流れ.{0,3}ない|ゆっくり|広がらな|広がりにく/},
+  {label:'火口付近で固まる',re:/固ま|かたま|冷え|たまる/,bonus:true}],
+ model:'マグマのねばりけが強く、流れにくいので、火口の近くで固まるから。',
+ point:'順番は「ねばりけが強い → 流れにくい → 火口の近くで固まる → もり上がった形」。白っぽい溶岩は、ねばりけが強い。',
+ trap:'ただし「ねばりけが弱いから」は逆。ねばりけが弱いと、広く流れてゆるやかな形（A）になる。'},
+{id:'t7',set:'t',no:'定番 7',field:'物理',
+ prompt:'遠くで花火が開くとき、光が見えてから、少しおくれて音が聞こえる。その理由を答えなさい。',
+ fig:'<svg viewBox="0 0 340 160" role="img" aria-label="左に見ている人、右上に花火。光は速く、音はおくれてとどく"><defs><marker id="ar7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/></marker></defs><circle cx="40" cy="92" r="9" fill="none" stroke="var(--ink)" stroke-width="2"/><path class="s-line" d="M40,101 V128 M40,108 L28,120 M40,108 L52,120 M40,128 L32,144 M40,128 L48,144"/><g class="s-line"><path d="M282,40 L282,22 M282,40 L282,58 M282,40 L264,40 M282,40 L300,40 M282,40 L269,27 M282,40 L295,53 M282,40 L295,27 M282,40 L269,53"/></g><path d="M268,52 L56,90" fill="none" stroke="var(--accent)" stroke-width="3" marker-end="url(#ar7)"/><path d="M268,62 L56,100" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ar7)"/><text class="s-tb" x="170" y="62" text-anchor="middle">光</text><text class="s-tb" x="170" y="104" text-anchor="middle">音</text><text class="s-tm" x="170" y="152" text-anchor="middle">花火までのきょり</text></svg>',
+ table:'<div class="tbl"><table><thead><tr><th>しゅるい</th><th>伝わる速さ</th></tr></thead><tbody><tr><td>光</td><td>約30万km／秒</td></tr><tr><td>音（空気中）</td><td>約340m／秒</td></tr></tbody></table></div>',
+ template:'（　）の伝わる速さは、（　）の速さよりずっと（　　）から。',
+ groups:[
+  {label:'光',re:/光/},
+  {label:'音',re:/音/},
+  {label:'速さをくらべる（おそい・速い）',re:/おそ|遅|速|はや|早/}],
+ model:'音の伝わる速さは、光の速さよりずっとおそいから。',
+ point:'光は1秒で地球を7周半ほど進む。音はたった340mほど。だから見えるのが先で、聞こえるのがあと。きょりが遠いほど、おくれは大きくなる。',
+ trap:'ただし「音は空気がないと伝わらないから」は×。この問題は、光と音の速さのちがいの話。'},
+{id:'t8',set:'t',no:'定番 8',field:'生物',
+ prompt:'小腸の壁の内側には、じゅう毛（<ruby>柔毛<rt>じゅうもう</rt></ruby>）とよばれる小さな突起がたくさんある。じゅう毛があると養分を吸収しやすいのはなぜか。「表面積」ということばを使って答えなさい。',
+ fig:villi,
+ template:'小腸の内側の（　　）が（　　）なり、養分を（　　）しやすいから。',
+ groups:[
+  {label:'表面積',re:/表面積/},
+  {label:'表面積が大きくなる（ふえる）',re:/大き|広|ふえ|増/},
+  {label:'養分を吸収する',re:/吸収|吸い|とりこ|取り込/}],
+ model:'小腸の内側の表面積が大きくなり、養分を効率よく吸収できるから。',
+ point:'同じはばでも、でこぼこがあると表面が長くなる。養分にふれる面がふえるので、たくさん吸収できる。根の根毛も同じ考え方。',
+ trap:'ただし「じゅう毛があると消化しやすいから」は×。消化は消化液のはたらき。じゅう毛は、吸収を助ける。'},
+{id:'h5',set:'h',no:'高得点 5',field:'化学',
+ prompt:'炭酸水素ナトリウムとうすい塩酸を、ふたをした容器の中で反応させて、質量を調べた。反応の前後と、ふたを開けたあとの質量は図のとおりだった。ふたを開けたあとの質量が小さくなった理由を、「二酸化炭素」ということばを使って答えなさい。',
+ fig:balance3,
+ template:'発生した（　　）が、空気中に（　　）から。',
+ groups:[
+  {label:'二酸化炭素',re:/二酸化炭素|CO2/},
+  {label:'空気中に出ていった',re:/出|逃|にげ|空気中|外/},
+  {label:'質量が減った',re:/質量|軽|減|へ/,bonus:true}],
+ model:'発生した二酸化炭素が空気中に出ていき、その分だけ質量が小さくなったから。',
+ point:'ふたをしたままなら、気体は外に出ないので質量は変わらない（質量保存の法則）。ふたを開けると、気体が出ていった分だけ軽くなる。',
+ trap:'ただし「質量保存の法則がくずれたから」は×。法則はいつも成り立つ。気体が外に出ただけ。'},
+{id:'h6',set:'h',no:'高得点 6',field:'生物',
+ prompt:'丸形の種子をつくる純系（AA）と、しわ形の種子をつくる純系（aa）をかけ合わせると、子はすべて丸形の種子になった。その理由を、「<ruby>遺伝子<rt>いでんし</rt></ruby>」「<ruby>顕性<rt>けんせい</rt></ruby>（<ruby>優性<rt>ゆうせい</rt></ruby>）」ということばを使って答えなさい。',
+ fig:punnett,
+ template:'子の遺伝子はすべて（　）。丸形が（　　）の形質なので、丸形だけが現れるから。',
+ groups:[
+  {label:'遺伝子（Aa）',re:/遺伝子|Aa/},
+  {label:'顕性（優性）',re:/顕性|優性/},
+  {label:'丸形だけが現れる',re:/現れ|あらわ|表れ|出る|出て/}],
+ model:'子の遺伝子はすべてAaで、丸形の遺伝子Aが顕性（優性）なので、丸形の形質だけが現れるから。',
+ point:'AAとaaの子は、かならずAa。AとaがそろうとAの形質（丸形）が現れる。この「現れるほう」が顕性（優性）。',
+ trap:'ただし「しわ形の遺伝子が消えたから」は×。aは子にも受けつがれている。現れないだけ。'},
+{id:'h7',set:'h',no:'高得点 7',field:'物理',
+ prompt:'同じ体積（50cm³）の物体A・Bを水に入れると、Aは水にうき、Bはしずんだ。表はA・Bの質量である。水の密度を1.0g/cm³として、うき沈みのちがいの理由を、「<ruby>密度<rt>みつど</rt></ruby>」「水」ということばを使って答えなさい。',
+ fig:densityFig,
+ table:'<div class="tbl"><table><thead><tr><th>物体</th><th>体積</th><th>質量</th></tr></thead><tbody><tr><td>A</td><td class="num">50cm³</td><td class="num">40g</td></tr><tr><td>B</td><td class="num">50cm³</td><td class="num">65g</td></tr></tbody></table></div>',
+ template:'Aの密度は（　）g/cm³で水より（　　）、Bの密度は（　）g/cm³で水より（　　）から。',
+ groups:[
+  {label:'密度',re:/密度/},
+  {label:'水と比べる',re:/水/},
+  {label:'Aは水より密度が小さい',re:/小さ|低|軽/},
+  {label:'Bは水より密度が大きい',re:/大き|高|重/},
+  {label:'密度の値（0.8と1.3）を出す',re:/0\.8.*1\.3|1\.3.*0\.8/,bonus:true}],
+ model:'Aの密度は0.8g/cm³で水の密度より小さく、Bの密度は1.3g/cm³で水の密度より大きいから。',
+ point:'密度 = 質量 ÷ 体積。Aは40÷50＝0.8、Bは65÷50＝1.3。水（1.0）より小さいとうき、大きいとしずむ。値を書けると説得力が上がる。',
+ trap:'ただし「Aのほうが軽いから」だけでは足りない。うくかしずむかは、水と比べて決まる。水の密度との大小まで書く。'},
+{id:'h8',set:'h',no:'高得点 8',field:'地学',
+ prompt:'ある日の12時から20時の気温の変化は、図のようになった。表は、そのときの<ruby>風向<rt>ふうこう</rt></ruby>と天気である。この間に寒冷前線が通過したと考えられる。そう考えられる理由を、「気温」「風向」ということばを使って答えなさい。',
+ fig:tempChart,
+ table:'<div class="tbl"><table><thead><tr><th>時刻</th><th>気温</th><th>風向</th><th>天気</th></tr></thead><tbody><tr><td>12時</td><td class="num">24.5℃</td><td>南</td><td>くもり</td></tr><tr><td>15時</td><td class="num">25.0℃</td><td>南</td><td>雨</td></tr><tr><td>17時</td><td class="num">18.0℃</td><td>北西</td><td>くもり</td></tr><tr><td>20時</td><td class="num">16.5℃</td><td>北西</td><td>晴れ</td></tr></tbody></table></div>',
+ template:'（　　）が急に（　　）、（　　）が（　　）寄りに変わったから。',
+ groups:[
+  {label:'気温',re:/気温/},
+  {label:'気温が下がった',re:/下が|低|さが/},
+  {label:'風向',re:/風向/},
+  {label:'風向が北寄り（北西）に変わった',re:/北|変わ|かわ/}],
+ model:'気温が急に下がり、風向が南寄りから北寄り（北西）に変わったから。',
+ point:'寒冷前線が通ると、冷たい空気が入ってくる。そのため気温が急に下がり、風向が南寄りから北寄りに変わる。短い時間の強い雨も目安になる。',
+ trap:'ただし「雨が降ったから」だけでは×。温暖前線でも雨は降る。決め手は、気温の急な下がり方と、風向の変化。'},
+{id:'t9',set:'t',no:'定番 9',field:'化学',
+ prompt:'酸化銅と炭素の混合物を試験管で加熱し、発生した気体を石灰水に通した。加熱をやめる前に、ガラス管を石灰水から取り出す。その理由を答えなさい。',
+ fig:figReduction,
+ template:'（　　）が加熱した試験管に（　　）して、試験管が（　　）のを防ぐため。',
+ groups:[
+  {label:'石灰水が逆流する（もどる）',re:/逆流|逆に|もどっ|戻|吸い上|流れこ|流れ込|入っ/},
+  {label:'試験管が割れるのを防ぐ',re:/割れ|われ|こわれ|壊れ/},
+  {label:'「石灰水（液）」が試験管に',re:/石灰水|液/,bonus:true}],
+ model:'石灰水が加熱した試験管に逆流して、試験管が割れるのを防ぐため。',
+ point:'加熱をやめると試験管の中の気体が冷えて縮み、石灰水が吸い上げられる。熱い試験管に冷たい液が入ると割れる。だから、火を消す前にガラス管をぬく。',
+ trap:'ただし「火を消すとあぶないから」だけでは点にならない。何が起こるか（逆流して割れる）まで書く。'},
+{id:'t10',set:'t',no:'定番 10',field:'化学',
+ prompt:'液体を加熱して<ruby>蒸留<rt>じょうりゅう</rt></ruby>するとき、フラスコに<ruby>沸騰石<rt>ふっとうせき</rt></ruby>を入れる。その理由を答えなさい。',
+ fig:figBoil,
+ template:'液体が（　　）沸騰するのを防ぐため。',
+ groups:[
+  {label:'沸騰（ふっとう）',re:/沸騰|ふっとう|ふき出|吹き出|吹きこぼ|吹き上/},
+  {label:'急に（はげしく）',re:/急|突然|はげし|激し|いきなり/}],
+ model:'液体が急に沸騰するのを防ぐため。',
+ point:'何も入れずに加熱すると、ある時とつぜん、はげしくふき出すことがある。沸騰石は、おだやかに沸騰させるためのもの。',
+ trap:'ただし「温度を高くするため」は×。沸騰石で温度は変わらない。急な沸騰を防ぐのが目的。'},
+{id:'t11',set:'t',no:'定番 11',field:'化学',
+ prompt:'ろ過をするとき、ろうとの先をビーカーの内側のかべにつける。その理由を答えなさい。',
+ fig:figFunnel,
+ template:'ろ液が（　　）のを防ぐため。',
+ groups:[
+  {label:'ろ液（液）',re:/ろ液|液|水/},
+  {label:'はねる（とびちる）',re:/はね|飛び散|とびち|散|とび出|飛び出|飛ぶ/}],
+ model:'ろ液がはねて、まわりにとびちるのを防ぐため。',
+ point:'先をかべにつけると、ろ液がかべをつたって静かに落ちる。はねると、ろ液がへったり、まわりをよごしたりする。',
+ trap:'ただし「ろ過を速くするため」は×。速さではなく、ろ液がはねないようにするため。'},
+{id:'t12',set:'t',no:'定番 12',field:'生物',
+ prompt:'<ruby>顕微鏡<rt>けんびきょう</rt></ruby>で観察するとき、はじめに低倍率にして観察する。その理由を答えなさい。',
+ fig:figMicro,
+ template:'（　　）が広く、観察するものを（　　）やすいから。',
+ groups:[
+  {label:'視野（見える範囲）',re:/視野|範囲/},
+  {label:'広い',re:/広|多く/},
+  {label:'観察するものを見つけやすい',re:/見つけ|探し|さがし|見つか/,bonus:true}],
+ model:'視野が広く、観察するものを見つけやすいから。',
+ point:'低倍率は大きくは見えないが、広い範囲が見える。まず見たいものを見つけて、そのあと倍率を上げる。',
+ trap:'ただし「はっきり見えるから」は×。低倍率は、はっきり大きく見えるわけではない。広く見えて探しやすいことが理由。'},
+{id:'t13',set:'t',no:'定番 13',field:'生物',
+ prompt:'植物の<ruby>蒸散<rt>じょうさん</rt></ruby>を調べる実験で、メスシリンダーの水面に油を少したらした。油をたらす理由を答えなさい。',
+ fig:figCylinder,
+ template:'（　　）から水が（　　）するのを防ぐため。',
+ groups:[
+  {label:'水面（水）',re:/水面|水/},
+  {label:'蒸発',re:/蒸発|じょうはつ/},
+  {label:'防ぐ',re:/防|ふせ|ないよう|しない|起こらな|おこらな/}],
+ model:'水面から水が蒸発するのを防ぐため。',
+ point:'この実験では、水が減った量を蒸散量として考える。水面から水が蒸発すると、蒸散の量が正しくはかれなくなる。',
+ trap:'ただし「空気が入らないようにするため」は×。油の目的は、水面からの蒸発を防ぐこと。'},
+{id:'t14',set:'t',no:'定番 14',field:'物理',
+ prompt:'走っているバスが急ブレーキをかけると、乗っている人は前に倒れそうになる。その理由を「<ruby>慣性<rt>かんせい</rt></ruby>」ということばを使って答えなさい。',
+ fig:figBus,
+ template:'慣性により、人は（　　）運動を続けようとするから。',
+ groups:[
+  {label:'慣性',re:/慣性/},
+  {label:'そのまま運動を続ける',re:/そのまま|運動.{0,6}続|続け|進もう|動き続|同じ速さ/},
+  {label:'バスが止まる（急ブレーキ）',re:/止ま|ブレーキ|減速/,bonus:true}],
+ model:'バスが止まっても、慣性により、人はそのまま前に進み続けようとするから。',
+ point:'慣性は、物体がそのままの運動を続けようとする性質。バスだけが急に止まり、人はそのままの速さで進み続けようとする。',
+ trap:'ただし「前に引っぱられるから」は×。人を前に引く力ははたらいていない。慣性でそのまま進もうとするだけ。'},
+{id:'t15',set:'t',no:'定番 15',field:'物理',
+ prompt:'ふもとで口をとじたスナック菓子の袋を、高い山の上に持っていくと、袋がふくらんだ。その理由を「気圧」ということばを使って答えなさい。',
+ fig:figBags,
+ template:'高い所は（　　）が低くなり、外から袋をおす力が（　　）なるから。',
+ groups:[
+  {label:'気圧',re:/気圧/},
+  {label:'気圧が低くなる',re:/低|小さ|下が|さが|へ/},
+  {label:'外からおす力が小さくなる',re:/おす力|押す力|外/,bonus:true}],
+ model:'高い所は気圧が低くなり、外から袋をおす力が小さくなるから。',
+ point:'高い所ほど上にある空気が少ないので、気圧が低い。外から袋をおす力が小さくなり、中の空気が広がって袋がふくらむ。',
+ trap:'ただし「袋の中の空気がふえたから」は×。口はとじたままで、中の空気の量は変わっていない。'},
+{id:'t16',set:'t',no:'定番 16',field:'物理',
+ prompt:'電熱線で水を温める実験で、発泡ポリスチレンのカップを使う。その理由を答えなさい。',
+ fig:figCup,
+ template:'（　）が外ににげ（　　）から。',
+ groups:[
+  {label:'熱',re:/熱/},
+  {label:'にげにくい（伝わりにくい）',re:/逃げにく|にげにく|伝わりにく|伝えにく|逃げな|にげな|断熱|出にく|外に出な/}],
+ model:'熱が外ににげにくいから。',
+ point:'電熱線が出した熱を、できるだけ水だけに伝えたい。発泡ポリスチレンは熱を伝えにくいので、熱が外ににげにくい。',
+ trap:'ただし「軽くて持ちやすいから」は×。使う理由は、熱がにげにくいという性質。'},
+{id:'t17',set:'t',no:'定番 17',field:'地学',
+ prompt:'冷たい水を入れた金属のコップの外側に、水滴がついた。その理由を「水蒸気」ということばを使って答えなさい。',
+ fig:figCool,
+ table:'<div class="tbl"><table><thead><tr><th>気温</th><th>1m³の空気にふくめる水蒸気の最大量</th></tr></thead><tbody><tr><td class="num">10℃</td><td class="num">9.4g</td></tr><tr><td class="num">20℃</td><td class="num">17.3g</td></tr><tr><td class="num">30℃</td><td class="num">30.4g</td></tr></tbody></table></div>',
+ template:'コップのまわりの空気が（　　）、空気中の（　　）が水滴に変わったから。',
+ groups:[
+  {label:'水蒸気',re:/水蒸気/},
+  {label:'冷やされる',re:/冷や|冷た|下が|さが|低/},
+  {label:'水滴に変わる',re:/水滴|凝結|液体|つぶ|水に/},
+  {label:'ふくめる量が減る（露点・飽和）',re:/ふくめ|含め|飽和|露点|限界|入りきら/,bonus:true}],
+ model:'コップのまわりの空気が冷やされてふくめる水蒸気の量が減り、空気中の水蒸気が水滴に変わったから。',
+ point:'空気は冷やされると、ふくめる水蒸気の量が少なくなる。ふくみきれなくなった水蒸気が、水滴に変わる。水滴ができはじめる温度が露点。',
+ trap:'ただし「コップの中の水がしみ出したから」は×。水滴は、まわりの空気中の水蒸気が変化したもの。'},
+{id:'t18',set:'t',no:'定番 18',field:'地学',
+ prompt:'空気のかたまりが上昇すると、雲ができる。その理由を「気圧」「<ruby>露点<rt>ろてん</rt></ruby>」ということばを使って答えなさい。',
+ fig:figUp,
+ template:'上昇すると（　　）が低くなり、空気が（　　）して温度が下がり、（　　）に達するから。',
+ groups:[
+  {label:'気圧が低くなる',re:/気圧.{0,8}(低|下|小)|低.{0,6}気圧/},
+  {label:'ぼう張する',re:/ぼう張|膨張|ふくら|広が/},
+  {label:'温度が下がる',re:/温度|気温|冷え|冷や|下が/},
+  {label:'露点',re:/露点/},
+  {label:'水蒸気が水滴（氷のつぶ）になる',re:/水滴|氷|つぶ/,bonus:true}],
+ model:'空気が上昇すると、まわりの気圧が低くなってぼう張し、温度が下がる。露点より低くなると水蒸気が水滴になり、雲ができるから。',
+ point:'順番は「上昇 → 気圧が低い → ぼう張 → 温度が下がる → 露点に達する → 水滴ができる」。ぼう張すると温度が下がる理由は、下の「なぜ？」を見よう。',
+ why:['なぜ、ぼう張すると温度が下がるの？',['上空は気圧が低いので、上昇した空気のかたまりは、まわりの空気をおしのけて広がる（ぼう張する）。','おしのけるには、エネルギーが必要。そのエネルギーは、空気のかたまり自身がもっている熱から使われる。だから、まわりに熱をわたさなくても、広がるだけで温度が下がる。これを断熱ぼう張という。','身近な例：ペットボトルに少し水を入れて強くおし、急に手をはなすと、中が白くくもる。ぼう張で温度が下がり、雲ができている。反対に、自転車の空気入れで空気を縮めると、熱くなる。','乾いた空気は、100m上昇するごとに約1℃下がる。高い山の上が寒い大きな理由も、これ。太陽からのきょりは、ほとんど関係ない。']],
+ trap:'ただし「温度が下がるから」だけでは足りない。なぜ下がるのか（気圧が低くなってぼう張する）まで書く。'},
+{id:'t19',set:'t',no:'定番 19',field:'地学',
+ prompt:'晴れた日の昼、海から陸へ向かって風がふく。その理由を「気圧」ということばを使って答えなさい。',
+ fig:figSeaWind,
+ template:'（　）のほうが海より（　　）やすく、陸上の（　　）が低くなるから。',
+ groups:[
+  {label:'陸',re:/陸/},
+  {label:'あたたまりやすい',re:/暖まり|あたたま|温まり|高温|気温が高/},
+  {label:'気圧',re:/気圧/},
+  {label:'気圧が低くなる',re:/低|下が|さが/}],
+ model:'陸のほうが海より暖まりやすく、陸上の気圧が海上より低くなるから。',
+ point:'昼は陸のほうが早く暖まる。陸の上で上昇気流が起こり、気圧が低くなる。気圧の高い海から、低い陸へ風がふく（海風）。',
+ why:['なぜ、暖まると気圧が低くなるの？',['気圧は「その場所の上にある空気の重さ」で決まる。','陸の地面があたためられると、その上の空気もあたたまってぼう張し、軽くなって上昇する。','上にある空気が上へにげるので、地面にかかる空気の重さが減り、気圧が低くなる。すると、まわりの気圧の高い海から、空気が流れこむ（海風）。']],
+ trap:'ただし「海のほうが暖かいから」は逆。昼は、陸のほうが早く暖まる。夜は反対（陸風）になる。'},
+{id:'t20',set:'t',no:'定番 20',field:'地学',
+ prompt:'冬、日本海側では雪が多くふる。その理由を「水蒸気」「山脈」ということばを使って答えなさい。',
+ fig:figSnow,
+ template:'冬の季節風が日本海の上で（　　）をふくみ、（　　）にぶつかって（　　）して雪雲ができるから。',
+ groups:[
+  {label:'水蒸気',re:/水蒸気/},
+  {label:'水蒸気をふくむ（多い）',re:/ふく|含|多/},
+  {label:'山脈にぶつかる',re:/山脈|山/},
+  {label:'上昇する',re:/上昇|のぼ|上がる|あがる/},
+  {label:'日本海・季節風',re:/日本海|季節風|北西/,bonus:true},
+  {label:'雪雲（雲）ができる',re:/雲/,bonus:true}],
+ model:'冬の季節風が日本海の上で水蒸気をふくみ、山脈にぶつかって上昇し、雪雲ができるから。',
+ point:'冷たい北西の風が、あたたかい日本海の上で水蒸気をたっぷりふくむ。その空気が山脈にぶつかって上昇し、雪雲になる。',
+ trap:'ただし「寒いから雪がふる」だけでは×。水蒸気がたくさんあって、上昇して雲になることがポイント。'},
+{id:'h9',set:'h',no:'高得点 9',field:'化学',
+ prompt:'60℃の飽和水溶液を20℃まで冷やすと、硝酸カリウムは多くの結晶が出たが、塩化ナトリウムはほとんど出なかった。塩化ナトリウムの結晶がほとんど出なかった理由を、グラフと表をもとに「溶解度」ということばを使って答えなさい。',
+ fig:solubChart,
+ table:'<div class="tbl"><table><thead><tr><th>水100gにとける質量</th><th>硝酸カリウム</th><th>塩化ナトリウム</th></tr></thead><tbody><tr><td>20℃</td><td class="num">31.6g</td><td class="num">35.8g</td></tr><tr><td>60℃</td><td class="num">109.2g</td><td class="num">37.1g</td></tr></tbody></table></div>',
+ template:'塩化ナトリウムは、（　　）による溶解度の（　　）が小さいから。',
+ groups:[
+  {label:'溶解度',re:/溶解度/},
+  {label:'変化が小さい（あまり変わらない）',re:/変化.{0,6}小|変わら|あまり変|ほとんど変|差が小|差.{0,3}小さ|差.{0,3}少な/},
+  {label:'温度',re:/温度/},
+  {label:'表の値（35.8gと37.1g）',re:/35\.8|37\.1/,bonus:true}],
+ model:'塩化ナトリウムは、温度による溶解度の変化が小さい（35.8gと37.1g）から。',
+ point:'冷やしたとき出てくる結晶の量は、溶解度の差で決まる。硝酸カリウムは差が大きく、塩化ナトリウムは差がほとんどない。だから塩化ナトリウムは、冷やしてもほとんど出ない。',
+ trap:'ただし「塩化ナトリウムはとけにくいから」は×。20℃で35.8gとけていて、とけにくいわけではない。温度で変わらないのが理由。'},
+{id:'h10',set:'h',no:'高得点 10',field:'物理',
+ prompt:'物体を0.5mの高さまで持ち上げるとき、斜面を使うと、直接持ち上げるより小さい力ですむ。しかし、仕事の大きさは変わらない。その理由を、表をもとに「力」「距離」ということばを使って答えなさい。',
+ fig:figWork,
+ table:'<div class="tbl"><table><thead><tr><th>方法</th><th>引く力</th><th>引く距離</th><th>仕事</th></tr></thead><tbody><tr><td>直接持ち上げる</td><td class="num">6N</td><td class="num">0.5m</td><td class="num">3J</td></tr><tr><td>斜面を使う</td><td class="num">3N</td><td class="num">1.0m</td><td class="num">3J</td></tr></tbody></table></div>',
+ template:'斜面を使うと、力は（　　）ですむが、動かす（　　）が（　　）なるから。',
+ groups:[
+  {label:'力',re:/力/},
+  {label:'力が小さくなる（半分）',re:/小さ|半分|少な|へ/},
+  {label:'距離',re:/距離/},
+  {label:'距離が長くなる（2倍）',re:/長|大き|ふえ|増|2倍|二倍/},
+  {label:'力×距離は同じ',re:/力×距離|力と距離の積|かけ/,bonus:true}],
+ model:'斜面を使うと、力は半分ですむが、物体を動かす距離が2倍になり、力×距離は変わらないから。',
+ point:'仕事 = 力 × 距離。斜面を使うと力は半分になるが、距離が2倍になる。だから仕事は3Jのまま変わらない（仕事の原理）。',
+ trap:'ただし「斜面を使うと楽になるから」だけでは×。楽でも、仕事の大きさは同じ。力と距離の両方を書く。'},
+{id:'h11',set:'h',no:'高得点 11',field:'生物',
+ prompt:'デンプン溶液に、水またはだ液を加えて温め、ヨウ素液とベネジクト液で調べた。結果は表のとおりだった。この結果から、だ液のはたらきについてわかることを、「だ液」「デンプン」ということばを使って答えなさい。',
+ fig:tubes4,
+ noEnd:true,
+ table:'<div class="tbl"><table><thead><tr><th>試験管</th><th>入れたもの</th><th>加えた液</th><th>結果</th></tr></thead><tbody><tr><td>A</td><td>デンプン溶液＋水</td><td>ヨウ素液</td><td>青紫色になった</td></tr><tr><td>B</td><td>デンプン溶液＋だ液</td><td>ヨウ素液</td><td>変化しなかった</td></tr><tr><td>C</td><td>デンプン溶液＋水</td><td>ベネジクト液（加熱）</td><td>変化しなかった</td></tr><tr><td>D</td><td>デンプン溶液＋だ液</td><td>ベネジクト液（加熱）</td><td>赤かっ色になった</td></tr></tbody></table></div>',
+ template:'だ液のはたらきで、（　　）がなくなり、（　　）ができた。',
+ groups:[
+  {label:'だ液',re:/だ液|唾液/},
+  {label:'デンプン',re:/デンプン|でんぷん/},
+  {label:'糖ができた',re:/糖/},
+  {label:'デンプンがなくなった（変化した）',re:/なくな|減|変化|変わ|分解/}],
+ model:'だ液のはたらきで、デンプンがなくなって、糖ができた。',
+ point:'ヨウ素液はデンプンがあると青紫色になる。ベネジクト液は糖があると赤かっ色になる。Bでデンプンが消え、Dで糖ができているので、だ液がデンプンを糖に変えたとわかる。',
+ trap:'ただし「だ液でデンプンができた」は逆。ヨウ素液が変化しなかったBは、デンプンがなくなったことを表している。'},
+{id:'h12',set:'h',no:'高得点 12',field:'地学',
+ prompt:'A地点とB地点は遠くはなれている。図のように、どちらの地層にも火山灰の層がある。火山灰の層をたよりに、2つの地点の地層を比べることができる。その理由を答えなさい。',
+ fig:figAsh,
+ template:'火山灰は（　　）範囲に、（　　）時期に降り積もるから。',
+ groups:[
+  {label:'火山灰',re:/火山灰/},
+  {label:'広い範囲',re:/広い|広範囲|遠く|はなれ|離れ/},
+  {label:'同じ時期',re:/同時|同じ時期|同じ頃|同じころ|短い期間|同じ時代/},
+  {label:'目印になる',re:/目印|かぎ|鍵|比べ|対比/,bonus:true}],
+ model:'火山灰は、広い範囲に同じ時期に降り積もり、地層の目印になるから。',
+ point:'火山灰は、ふん火のとき、広い範囲に短い期間で降り積もる。はなれた場所の火山灰の層は、同じ時期にできたもの。地層の対比の目印（かぎ層）になる。',
+ trap:'ただし「火山灰がきれいだから」「厚いから」は×。理由は、広い範囲に同じ時期に積もるという性質。'},
+{id:'t21',set:'t',no:'定番 21',field:'地学',
+ prompt:'日本では、夏は冬より気温が高くなる。その理由を、「<ruby>南中高度<rt>なんちゅうこうど</rt></ruby>」「昼の長さ」ということばを使って答えなさい。',
+ fig:figSun,
+ template:'夏は南中高度が（　　）、昼の長さも（　　）ので、地面が受ける光が（　　）なるから。',
+ groups:[
+  {label:'南中高度',re:/南中高度/},
+  {label:'南中高度が高い',re:/高/},
+  {label:'昼の長さが長い',re:/長/},
+  {label:'光（熱）の量が多い',re:/多|量|熱|あたた|暖/,bonus:true}],
+ model:'夏は太陽の南中高度が高く、昼の長さも長いので、地面が受け取る太陽の光（熱）が多くなるから。',
+ point:'南中高度が高いと、同じ量の光がせまい面積に集まる。さらに昼が長いので、光を受ける時間も長い。この2つで、夏は地面があたたまる。',
+ why:['なぜ、夏は南中高度が高くて、昼が長いの？',['地球は、自転の軸（地軸）が公転する面に対して約23.4°かたむいたまま、太陽のまわりを回っている。','夏は北半球が太陽のほうにかたむくので、太陽が高く昇り、昼も長くなる。冬はその反対になる。']],
+ trap:'ただし「夏は太陽に近いから」は×。地球と太陽のきょりは、季節でほとんど関係ない。地軸のかたむきが原因。'},
+{id:'t22',set:'t',no:'定番 22',field:'地学',
+ prompt:'月は、満ち欠けして見える。その理由を、「太陽の光」「位置」ということばを使って答えなさい。',
+ fig:figMoon,
+ template:'月は太陽の光を（　　）してかがやき、月・地球・太陽の（　　）が変わるから。',
+ groups:[
+  {label:'太陽の光',re:/太陽/},
+  {label:'反射してかがやく（光が当たる）',re:/反射|当たっ|あたっ|照ら|てらさ/},
+  {label:'位置（位置関係）が変わる',re:/位置|角度|向き/},
+  {label:'見える明るい部分が変わる',re:/見え|形|明るい部分|明るい面/,bonus:true}],
+ model:'月は太陽の光を反射してかがやいていて、月・地球・太陽の位置が変わり、地球から見える明るい部分が変わるから。',
+ point:'月は自分では光らない。いつも、太陽に向いた半分が光っている。月が地球のまわりを回ると、地球から見える明るい部分の形が変わる。',
+ trap:'ただし「地球のかげが月にかかるから」は×。それは月食。満ち欠けは、月の明るい部分を見る向きが変わるため。'},
+{id:'t23',set:'t',no:'定番 23',field:'地学',
+ prompt:'金星は、真夜中には見えない。その理由を、「内側」「公転」ということばを使って答えなさい。',
+ fig:figVenus,
+ template:'金星は地球より（　　）を公転していて、地球から見て（　　）から大きくはなれないから。',
+ groups:[
+  {label:'地球より内側',re:/内側/},
+  {label:'公転',re:/公転|軌道/},
+  {label:'太陽から大きくはなれない（太陽の近く）',re:/太陽.{0,12}(近|はなれ|離れ|方向|同じ)|はなれ|離れ/},
+  {label:'見えるのは明け方・夕方',re:/明け方|夕方|よい|宵/,bonus:true}],
+ model:'金星は地球より内側を公転していて、地球から見ると太陽から大きくはなれないので、見えるのは明け方か夕方だけだから。',
+ point:'図のように、地球から金星が見える方向は、太陽のまわりのせまい範囲だけ。真夜中の方向（太陽と反対側）には、金星はない。',
+ why:['なぜ、内側を回ると真夜中に見えないの？',['真夜中に見える方向は、太陽と反対の方向。','地球より内側を回る金星は、地球から見ると、いつも太陽の近くの方向にしかない。','だから、太陽がしずんだ直後（夕方）か、太陽が昇る直前（明け方）にしか見えない。']],
+ trap:'ただし「金星は地球より小さいから」は×。大きさは関係ない。軌道が地球の内側にあることが理由。'},
+{id:'t24',set:'t',no:'定番 24',field:'地学',
+ prompt:'火成岩のうち、深成岩は、大きな鉱物のつぶがぎっしり組み合わさったつくりをしている。深成岩が、大きなつぶ（結晶）になる理由を答えなさい。',
+ fig:figRock,
+ template:'マグマが（　　）で、（　　）冷えて固まるから。',
+ groups:[
+  {label:'地下の深い所',re:/地下|深い|地中/},
+  {label:'ゆっくり冷える（長い時間）',re:/ゆっくり|長い時間|時間をかけ/},
+  {label:'結晶が大きく育つ',re:/結晶|大きく育|育/,bonus:true}],
+ model:'マグマが地下の深い所で、長い時間をかけてゆっくり冷えて固まり、結晶が大きく育つから。',
+ point:'火山岩は地表近くで急に冷えるので、小さなつぶの中に大きな結晶がまじる。深成岩は地下で、ゆっくり冷えるので、全体が大きな結晶になる。',
+ why:['なぜ、ゆっくり冷えると結晶が大きくなるの？',['マグマの中で、鉱物の結晶は、少しずつ成長する。','ゆっくり冷えると、成長する時間が長いので、結晶が大きく育つ。','急に冷えると、結晶が大きくなる前に固まるので、つぶが小さいままになる。']],
+ trap:'ただし「地下は温度が高いから」だけでは×。大事なのは、冷えるのがゆっくりだということ。'},
+{id:'t25',set:'t',no:'定番 25',field:'物理',
+ prompt:'水の入ったコップの底のコインを、真横から見ると、実際より浅い所にあるように見える。その理由を、「屈折」ということばを使って答えなさい。',
+ fig:figRefract,
+ template:'コインからの光が、（　　）から空気中へ出るとき、水面で（　　）し、光が（　　）にまっすぐ来たように見えるから。',
+ groups:[
+  {label:'屈折',re:/屈折/},
+  {label:'水面（水から空気へ出るとき）',re:/水面|境界|水から空気|水と空気|水中から/},
+  {label:'まっすぐ来たように見える（延長線上）',re:/延長|まっすぐ|直進|来たよう|きたよう|ように見え/}],
+ model:'コインからの光が、水中から空気中へ出るとき水面で屈折し、目には、光が実際より浅い所からまっすぐ来たように見えるから。',
+ point:'光は水面で曲がる（屈折する）。人の目は、光が曲がったことに気づかず、光が「まっすぐ来た」と受け取る。だから、曲がる前の光の延長線上にコインがあるように見える。',
+ why:['なぜ、水から空気に出ると光が曲がるの？',['光は、水の中より空気中のほうが速く進む。進む物質がかわる境目で、光の進む向きが曲がる。','目は、目にとどいた光の向きを、そのままさかのぼって位置を決める。だから、図の点線の位置にコインがあるように見える。']],
+ trap:'ただし「水が光を反射するから」は×。反射ではなく、光が水面で曲がる屈折。'},
+{id:'t26',set:'t',no:'定番 26',field:'物理',
+ prompt:'紙は、どの方向から見ても見える。その理由を、「反射」ということばを使って答えなさい。',
+ fig:figRough,
+ template:'紙の表面は（　　）があり、光が（　　）向きに反射するから。',
+ groups:[
+  {label:'表面がでこぼこ（ざらざら）',re:/でこぼこ|凸凹|ざらざら|細かい|あらい|粗い/},
+  {label:'いろいろな向きに',re:/いろいろ|あらゆる|さまざま|ばらばら|四方|あちこち|いろんな/},
+  {label:'乱反射',re:/乱反射|反射/,bonus:true}],
+ model:'紙の表面にはこまかいでこぼこがあり、光がいろいろな向きに反射する（乱反射する）から。',
+ point:'鏡のようになめらかな面は、光が同じ向きに反射する。紙のようにざらざらした面は、光がいろいろな向きに反射する（乱反射）。だから、どこから見ても光が目にとどく。',
+ trap:'ただし「紙が光っているから」は×。紙は自分では光らない。まわりの光を反射して見えている。'},
+{id:'t27',set:'t',no:'定番 27',field:'物理',
+ prompt:'コイルに棒磁石を近づけると、検流計の針がふれた。しかし、磁石をコイルの中に入れたまま止めると、針は0にもどった。その理由を、「磁界」ということばを使って答えなさい。',
+ fig:figCoil,
+ template:'磁石が止まると、コイルの中の（　　）が（　　）なくなるから。',
+ groups:[
+  {label:'磁界（コイルの中の磁界）',re:/磁界|磁力線|磁場/},
+  {label:'変化しなくなる',re:/変化|変わ|かわ|動かな/}],
+ model:'磁石が止まると、コイルの中の磁界が変化しなくなるから。',
+ point:'電流が流れるのは、コイルの中の磁界が変化しているあいだだけ（電磁誘導）。磁石が止まっていると、近くにあっても、磁界は変化しない。',
+ why:['電磁誘導って、何？',['コイルの中の磁界が変化すると、コイルに電圧が生じて、電流が流れる。これが電磁誘導。','磁石が動いている間は、磁界がどんどん変化するので、電流が流れる。','磁石が止まると、磁界が変化しないので、電流は流れない。磁石の強さや近さではなく、「変化」が大事。']],
+ trap:'ただし「磁石が弱くなったから」は×。磁石は止まっただけで、強さは変わっていない。'},
+{id:'t28',set:'t',no:'定番 28',field:'物理',
+ prompt:'家庭のコンセントでは、電気器具が並列につながれている。並列につなぐ理由を、「電圧」ということばを使って答えなさい。',
+ fig:figCircuit,
+ template:'どの器具にも（　　）電圧（100V）がかかり、1つのスイッチを切っても、（　　）の器具が使えるから。',
+ groups:[
+  {label:'同じ電圧（100V）がかかる',re:/同じ電圧|100V|電圧.{0,8}(同じ|かかる|加わ)|どれも.{0,6}電圧/},
+  {label:'ほかの器具に影響しない',re:/ほか|他|別々|独立|どれか|ひとつ|1つ|影響/}],
+ model:'どの器具にも同じ電圧（100V）がかかり、1つのスイッチを切っても、ほかの器具が使えるから。',
+ point:'並列なら、それぞれの器具が電源につながっていて、同じ電圧がかかる。1つを切っても、ほかの回路は切れない。',
+ why:['直列につなぐと、どうなるの？',['直列だと、電圧が器具の数に分かれて、どの器具にも100Vより低い電圧しかかからない。','また、1つのスイッチを切ると、回路が途中で切れて、すべての器具が止まる。']],
+ trap:'ただし「電流が大きくなるから」は×。理由は、同じ電圧がかかることと、別々に使えること。'},
+{id:'t29',set:'t',no:'定番 29',field:'化学',
+ prompt:'うすい塩酸に、うすい水酸化ナトリウム水溶液を加えていくと、やがて中性になる。液が中性に近づく理由を、「水素イオン」「水酸化物イオン」ということばを使って答えなさい。',
+ fig:figIon,
+ template:'（　　）と（　　）が結びついて（　　）になり、おたがいの性質を打ち消し合うから。',
+ groups:[
+  {label:'水素イオン',re:/水素イオン|H\+|H＋|H⁺/},
+  {label:'水酸化物イオン',re:/水酸化物イオン|OH/},
+  {label:'結びついて水になる',re:/結びつ|結合|水になる|水ができ|水が/},
+  {label:'おたがいの性質を打ち消す',re:/打ち消|打消|なくな|へる|減|中和/,bonus:true}],
+ model:'水素イオンと水酸化物イオンが結びついて水になり、おたがいの性質を打ち消し合うから。',
+ point:'酸性のもとは水素イオン、アルカリ性のもとは水酸化物イオン。この2つが結びついて水になると、酸性もアルカリ性も弱まる。',
+ why:['なぜ、結びつくと性質が消えるの？',['酸性の正体は水素イオン、アルカリ性の正体は水酸化物イオン。','この2つが出会うと、水（中性）になってしまうので、どちらの性質も減っていく。','ちょうど同じ数ずつ結びつくと、中性（BTB溶液は緑色）になる。']],
+ trap:'ただし「塩酸と水酸化ナトリウムが混ざって、うすまったから」は×。うすまるだけでは中性にならない。イオンが結びつくから。'},
+{id:'t30',set:'t',no:'定番 30',field:'化学',
+ prompt:'オキシドールに二酸化マンガンを加えて酸素を発生させ、水上置換法で集める。はじめに出てくる気体は、集めずに捨てる。その理由を答えなさい。',
+ fig:figGas,
+ template:'はじめに出てくる気体には、（　　）の中にあった（　　）がふくまれているから。',
+ groups:[
+  {label:'空気',re:/空気/},
+  {label:'空気がまじる（ふくまれる）',re:/まじ|混ざ|混じ|ふくま|含ま|入っ|はいっ/},
+  {label:'装置の中にあった',re:/装置|フラスコ|管|中に|もともと/,bonus:true}],
+ model:'はじめに出てくる気体には、装置の中にあった空気がふくまれているから。',
+ point:'反応をはじめた直後は、フラスコや管の中に、もともと空気が入っている。その空気が先におし出されてくるので、純粋な酸素が集まらない。',
+ trap:'ただし「はじめの気体は温度が高いから」は×。理由は、空気がまじっていること。'},
+{id:'t31',set:'t',no:'定番 31',field:'生物',
+ prompt:'動脈は、静脈よりも壁が厚い。その理由を答えなさい。',
+ fig:figArtery,
+ template:'（　　）から送り出された血液の（　　）にたえるため。',
+ groups:[
+  {label:'心臓から',re:/心臓/},
+  {label:'強い圧力（血圧・いきおい）',re:/強|圧力|いきおい|勢い|血圧/},
+  {label:'たえる',re:/たえ|耐え|やぶれ|破れ|ひろが|広が/,bonus:true}],
+ model:'心臓から送り出された血液の強い圧力にたえるため。',
+ point:'動脈には、心臓から出た血液が、いきおいよく流れる。だから、強い圧力にたえられるように、壁が厚くて弾力がある。',
+ trap:'ただし「血液がたくさん流れるから」は×。量ではなく、血液の圧力の強さが理由。'},
+{id:'t32',set:'t',no:'定番 32',field:'生物',
+ prompt:'静脈の内側には、ところどころに「弁」がある。弁がある理由を答えなさい。',
+ fig:figVein,
+ template:'（　　）が（　　）するのを防ぐため。',
+ groups:[
+  {label:'血液',re:/血液|血/},
+  {label:'逆流する（もどる）',re:/逆流|逆|もどっ|戻/},
+  {label:'防ぐ',re:/防|ふせ|ないよう/}],
+ model:'血液が逆流するのを防ぐため。',
+ point:'静脈は、血液を押し出す力が弱い。とくに足では、血液が重力でもどりやすい。弁があると、血液は心臓の向きにしか進めない。',
+ trap:'ただし「血液をためるため」は×。弁は、血液が流れる向きを、一方向に決めるもの。'},
+{id:'h13',set:'h',no:'高得点 13',field:'化学',
+ prompt:'うすい塩酸10mLに、うすい水酸化ナトリウム水溶液を少しずつ加えて、BTB溶液の色を調べた。10mL加えたとき緑色、15mL加えたとき青色になった。15mLで青色になった理由を、「水酸化物イオン」ということばを使って答えなさい。',
+ fig:figTubesBTB,
+ table:'<div class="tbl"><table><thead><tr><th>加えた体積（mL）</th><th class="num">0</th><th class="num">5</th><th class="num">10</th><th class="num">15</th><th class="num">20</th></tr></thead><tbody><tr><td>BTB溶液の色</td><td>黄色</td><td>黄色</td><td>緑色</td><td>青色</td><td>青色</td></tr></tbody></table></div>',
+ template:'中和が終わったあとも加えたので、結びつく（　　）がなく、（　　）が残ったから。',
+ groups:[
+  {label:'水酸化物イオン',re:/水酸化物イオン|OH/},
+  {label:'中和が終わった（10mLでちょうど）',re:/中和|10|ちょうど|すべて反応|なくな/},
+  {label:'水酸化物イオンが残る（ふえる）',re:/残|余|ふえ|増/},
+  {label:'アルカリ性になる',re:/アルカリ/,bonus:true}],
+ model:'10mLで中和が終わったあとも水酸化ナトリウム水溶液を加えたので、水素イオンと結びつかない水酸化物イオンが残り、アルカリ性になったから。',
+ point:'10mLで、水素イオンはすべて水酸化物イオンと結びついた（中和が終わった）。それ以降は、加えた水酸化物イオンが、結びつく相手がないまま水溶液中に残る。',
+ why:['なぜ、ちょうど中和したあとはアルカリ性になるの？',['10mLのとき、塩酸の水素イオンはすべて、水酸化物イオンと結びついて、なくなっている。','そのあとも加えると、結びつく水素イオンがないので、水酸化物イオンが水溶液中に残って、ふえていく。','水酸化物イオンが多いと、アルカリ性になる（BTB溶液は青色）。']],
+ trap:'ただし「水酸化ナトリウム水溶液を加えすぎたから」だけでは×。何がふえたから青色になったのか（水酸化物イオン）まで書く。'},
+{id:'h14',set:'h',no:'高得点 14',field:'物理',
+ prompt:'物体をばねばかりにつるし、水に少しずつ沈めていった。結果は表のとおりだった。6cmより深く沈めても、ばねばかりの値が変わらなかった理由を、「浮力」「体積」ということばを使って答えなさい。',
+ fig:figBuoy,
+ table:'<div class="tbl"><table><thead><tr><th>沈めた深さ（cm）</th><th class="num">0</th><th class="num">2</th><th class="num">4</th><th class="num">6</th><th class="num">8</th></tr></thead><tbody><tr><td>ばねばかり（N）</td><td class="num">3.0</td><td class="num">2.6</td><td class="num">2.2</td><td class="num">1.8</td><td class="num">1.8</td></tr></tbody></table></div>',
+ template:'物体がすべて水中に入ると、水中にある部分の（　　）が変わらず、（　　）が一定になるから。',
+ groups:[
+  {label:'浮力',re:/浮力/},
+  {label:'体積',re:/体積/},
+  {label:'変わらない（一定）',re:/変わら|一定|同じ|かわら/},
+  {label:'物体がすべて水中に入った',re:/すべて|全部|完全|全体|入りきっ|ぜんぶ/}],
+ model:'物体がすべて水中に入ると、水中にある部分の体積が変わらず、浮力が一定になるから。',
+ point:'ばねばかりの値 = 物体の重さ − 浮力。6cmで物体がすべて水中に入り、それ以上は浮力がふえない。だから、値も変わらない。',
+ why:['浮力は、何で決まるの？',['浮力の大きさは、物体が押しのけた水の重さに等しい。つまり、水中にある部分の体積で決まる。','物体が全部水の中に入ると、水中にある体積は、それ以上ふえない。だから、深く沈めても、浮力は変わらない。']],
+ trap:'ただし「深く沈めるほど、浮力が大きくなるから」は×。浮力は深さではなく、水中にある体積で決まる。'},
+{id:'h15',set:'h',no:'高得点 15',field:'地学',
+ prompt:'満月は、真夜中ごろに真南の空に見える（南中する）。その理由を、「太陽」「反対」ということばを使って答えなさい。',
+ fig:figFull,
+ table:'<div class="tbl"><table><thead><tr><th>月の形</th><th>真南に見える時刻</th></tr></thead><tbody><tr><td>新月</td><td class="num">12時ごろ</td></tr><tr><td>上弦の月</td><td class="num">18時ごろ</td></tr><tr><td>満月</td><td class="num">24時ごろ</td></tr><tr><td>下弦の月</td><td class="num">6時ごろ</td></tr></tbody></table></div>',
+ template:'満月は、地球から見て太陽と（　　）の方向にあるので、太陽が真下にくる（　　）ごろに、真南に見えるから。',
+ groups:[
+  {label:'太陽',re:/太陽/},
+  {label:'反対（反対側）',re:/反対/},
+  {label:'真夜中ごろ',re:/真夜中|24時|夜中|深夜/},
+  {label:'地球・真下・真南',re:/地球|真下|真南/,bonus:true}],
+ model:'満月は、地球から見て太陽と反対の方向にあるので、太陽が真下（地球の反対側）にくる真夜中に、月が真南に見えるから。',
+ point:'満月は、太陽・地球・月が、ほぼ一直線にならぶときの月。月は太陽の反対側にある。太陽が真南にくる正午の12時間後（真夜中）が、満月の南中の時刻。',
+ why:['太陽が真下にくるのは、いつ？',['ある場所で、太陽が真南にくるのは正午ごろ。その場所の真下（地球の反対側）に太陽がくるのは、12時間後の真夜中ごろ。','満月は、太陽の反対側にある。だから、太陽が真下にくるとき、満月は真上（真南）の高さにある。']],
+ trap:'ただし「満月は一番明るいから」は×。明るさは関係ない。位置関係（太陽の反対側）が理由。'},
+{id:'h16',set:'h',no:'高得点 16',field:'生物',
+ prompt:'ふ入りの葉を一晩暗い所に置いたあと、光を当て、エタノールで脱色してからヨウ素液につけた。結果は表のとおりだった。この結果から、光合成が行われる場所について、わかることを、「葉緑体」ということばを使って答えなさい。',
+ fig:figFuiri,
+ noEnd:true,
+ table:'<div class="tbl"><table><thead><tr><th>葉の部分</th><th>葉緑体</th><th>ヨウ素液の結果</th></tr></thead><tbody><tr><td>緑色の部分</td><td>ある</td><td>青紫色になった</td></tr><tr><td>白い部分（ふ）</td><td>ない</td><td>変化しなかった</td></tr></tbody></table></div>',
+ template:'光合成は、（　　）がある部分で行われる。',
+ groups:[
+  {label:'葉緑体',re:/葉緑体/},
+  {label:'光合成',re:/光合成/},
+  {label:'葉緑体がある部分で行われる',re:/ある|もつ|持つ|ふくむ|含/}],
+ model:'光合成は、葉緑体がある部分で行われる。',
+ point:'ヨウ素液で青紫色になった部分は、デンプンができた部分。つまり、光合成が行われた部分。それは、葉緑体のある緑色の部分だけだった。',
+ why:['ヨウ素液の結果は、なぜそう読めるの？',['ヨウ素液は、デンプンがあると青紫色になる。','光合成が行われると、デンプンができる。だから、青紫色になった部分では、光合成が行われたとわかる。','緑色の部分には葉緑体があり、白い部分にはない。このちがいが、結果のちがいになっている。']],
+ trap:'ただし「白い部分は光が当たらなかったから」は×。同じ葉で、光は同じように当たっている。ちがうのは葉緑体の有無。'}
+];
+function villi(){
+  let z='';for(let i=0;i<7;i++)z+=' l8,-26 l8,26';
+  return '<svg viewBox="0 0 340 170" role="img" aria-label="左は平らな小腸の壁、右はじゅう毛がたくさんある小腸の壁。同じはばでも、右のほうが表面が長い"><defs><marker id="ar8b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/></marker></defs><path class="s-glass" d="M20,70 H132 V112 H20 Z"/><path class="s-glass" d="M190,70'+z+' V112 H190 Z"/><text class="s-t" x="76" y="22" text-anchor="middle">養分</text><path class="s-line" d="M76,28 V58" marker-end="url(#ar8b)"/><text class="s-t" x="246" y="22" text-anchor="middle">養分</text><path class="s-line" d="M246,28 V34" marker-end="url(#ar8b)"/><text class="s-tb" x="76" y="136" text-anchor="middle">平らな壁</text><text class="s-tb" x="246" y="136" text-anchor="middle">じゅう毛のある壁</text><text class="s-tm" x="76" y="154" text-anchor="middle">小腸の内側（はば同じ）</text><text class="s-tm" x="246" y="154" text-anchor="middle">小腸の内側（はば同じ）</text></svg>';
+}
+function balance3(){
+  const xs=[60,170,280],reads=['120.0 g','120.0 g','119.4 g'],l1=['反応前','反応後','ふたを開けたあと'],l2=['（ふたをしてある）','（ふたをしたまま）',''];
+  let o='<svg viewBox="0 0 340 190" role="img" aria-label="はかりにのせた容器。反応前は120.0g、ふたをしたまま反応後も120.0g、ふたを開けたあとは119.4g"><defs><marker id="ar9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/></marker></defs>';
+  xs.forEach((x,i)=>{
+    o+='<path class="s-glass-n" d="M'+(x-8)+',22 V52 L'+(x-30)+',100 H'+(x+30)+' L'+(x+8)+',52 V22 Z"/>';
+    o+='<path d="M'+(x-20)+',78 H'+(x+20)+' L'+(x+30)+',100 H'+(x-30)+' Z" fill="var(--water)"/>';
+    o+='<path class="s-line" d="M'+(x-8)+',22 V52 L'+(x-30)+',100 H'+(x+30)+' L'+(x+8)+',52 V22"/>';
+    if(i<2){o+='<rect class="s-metal" x="'+(x-11)+'" y="13" width="22" height="9" rx="2"/>';}
+    else{o+='<path class="s-line" d="M'+(x-3)+',16 V2" marker-end="url(#ar9)"/><path class="s-line" d="M'+(x+4)+',16 V2" marker-end="url(#ar9)"/>';}
+    o+='<rect class="s-box" x="'+(x-40)+'" y="102" width="80" height="10" rx="2"/>';
+    o+='<rect class="s-box" x="'+(x-34)+'" y="118" width="68" height="24" rx="4"/>';
+    o+='<text class="s-tb" x="'+x+'" y="135" text-anchor="middle">'+reads[i]+'</text>';
+    o+='<text class="s-t" x="'+x+'" y="162" text-anchor="middle">'+l1[i]+'</text>';
+    o+='<text class="s-tm" x="'+x+'" y="178" text-anchor="middle">'+l2[i]+'</text>';
+  });
+  return o+'</svg>';
+}
+function punnett(){
+  const x0=110,y0=50,w=70,h=40;
+  let o='<svg viewBox="0 0 340 190" role="img" aria-label="丸形の親AAとしわ形の親aaをかけ合わせたときの、子の遺伝子の組み合わせの表。4つともAa">';
+  o+='<text class="s-t" x="'+(x0+w)+'" y="18" text-anchor="middle">しわ形の親（aa）</text>';
+  o+='<text class="s-tb" x="'+(x0+w/2)+'" y="42" text-anchor="middle">a</text><text class="s-tb" x="'+(x0+w*1.5)+'" y="42" text-anchor="middle">a</text>';
+  o+='<text class="s-t" x="6" y="'+(y0+h-2)+'">丸形の親</text><text class="s-t" x="6" y="'+(y0+h+16)+'">（AA）</text>';
+  for(let r=0;r<2;r++){
+    o+='<text class="s-tb" x="'+(x0-14)+'" y="'+(y0+h*r+h/2+5)+'" text-anchor="middle">A</text>';
+    for(let c=0;c<2;c++){
+      o+='<rect class="s-box" x="'+(x0+c*w)+'" y="'+(y0+r*h)+'" width="'+w+'" height="'+h+'"/>';
+      o+='<text class="s-tb" x="'+(x0+c*w+w/2)+'" y="'+(y0+r*h+h/2+5)+'" text-anchor="middle">Aa</text>';
+    }
+  }
+  o+='<text class="s-t" x="'+(x0+w)+'" y="158" text-anchor="middle">子の遺伝子の組み合わせは</text><text class="s-t" x="'+(x0+w)+'" y="176" text-anchor="middle">すべて Aa</text>';
+  return o+'</svg>';
+}
+function densityFig(){
+  return '<svg viewBox="0 0 340 186" role="img" aria-label="左のビーカーでは物体Aが水にうき、右のビーカーでは物体Bが底にしずんでいる"><rect class="s-water" x="32" y="70" width="116" height="78"/><path class="s-line" d="M30,40 V142 a8,8 0 0 0 8,8 H142 a8,8 0 0 0 8,-8 V40"/><rect class="s-block" x="70" y="52" width="40" height="40"/><text class="s-tb" x="90" y="78" text-anchor="middle">A</text><rect class="s-water" x="192" y="70" width="116" height="78"/><path class="s-line" d="M190,40 V142 a8,8 0 0 0 8,8 H302 a8,8 0 0 0 8,-8 V40"/><rect class="s-block" x="230" y="106" width="40" height="40"/><text class="s-tb" x="250" y="132" text-anchor="middle">B</text><text class="s-t" x="170" y="176" text-anchor="middle">水の密度：1.0g/cm³</text></svg>';
+}
+function tempChart(){
+  const pts=[[12,24.5],[15,25],[17,18],[20,16.5]];
+  const X=h=>44+(h-12)*34.5,Y=t=>24+(26-t)*11;
+  let o='<svg viewBox="0 0 340 190" role="img" aria-label="12時から20時の気温の変化。15時から17時にかけて急に下がっている">';
+  [14,18,22,26].forEach(t=>{o+='<line class="s-dash" x1="44" y1="'+Y(t)+'" x2="320" y2="'+Y(t)+'"/><text class="s-t" x="38" y="'+(Y(t)+4)+'" text-anchor="end">'+t+'</text>';});
+  [12,14,16,18,20].forEach(h=>{o+='<line class="s-line" x1="'+X(h)+'" y1="156" x2="'+X(h)+'" y2="161"/><text class="s-t" x="'+X(h)+'" y="177" text-anchor="middle">'+h+'時</text>';});
+  o+='<line class="s-line" x1="44" y1="156" x2="320" y2="156"/><line class="s-line" x1="44" y1="20" x2="44" y2="156"/>';
+  o+='<polyline class="s-line" points="'+pts.map(p=>X(p[0])+','+Y(p[1])).join(' ')+'"/>';
+  pts.forEach(p=>{o+='<circle class="s-acc" cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="4"/>';});
+  o+='<text class="s-tm" x="8" y="14">気温（℃）</text>';
+  return o+'</svg>';
+}
+function mk(id){return '<defs><marker id="'+id+'" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/></marker></defs>';}
+function figReduction(){
+  return '<svg viewBox="0 0 340 196" role="img" aria-label="酸化銅と炭素を試験管で加熱し、発生した気体をガラス管で石灰水に通している図">'
+  +'<defs><clipPath id="c9"><path d="M130,-18 H0 A18,18 0 0 0 0,18 H130 Z"/></clipPath></defs>'
+  +'<path class="s-flame" d="M52,130 C42,116 48,108 52,98 C56,108 62,116 52,130 Z"/>'
+  +'<rect class="s-glass" x="36" y="132" width="32" height="20" rx="4"/>'
+  +'<g transform="translate(30,60) rotate(8)"><path class="s-glass-n" d="M130,-18 H0 A18,18 0 0 0 0,18 H130 Z"/><rect x="-20" y="2" width="60" height="20" fill="#3f3f3f" clip-path="url(#c9)"/><path class="s-line" d="M130,-18 H0 A18,18 0 0 0 0,18 H130"/><rect class="s-metal" x="118" y="-14" width="16" height="28" rx="2"/></g>'
+  +'<path d="M162,78 H250 V152" fill="none" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
+  +'<path class="s-glass-n" d="M205,104 V170 a8,8 0 0 0 8,8 H297 a8,8 0 0 0 8,-8 V104 Z"/><rect class="s-water" x="207" y="128" width="96" height="48"/>'
+  +'<path class="s-line" d="M205,104 V170 a8,8 0 0 0 8,8 H297 a8,8 0 0 0 8,-8 V104"/>'
+  +'<path d="M250,152 V150" stroke="var(--ink)" stroke-width="4"/><circle cx="254" cy="142" r="2.5" fill="none" stroke="var(--ink)"/><circle cx="246" cy="136" r="2" fill="none" stroke="var(--ink)"/>'
+  +'<text class="s-t" x="6" y="30">酸化銅＋炭素</text><path class="s-thin" d="M44,36 L48,68"/>'
+  +'<text class="s-t" x="176" y="66">ガラス管</text>'
+  +'<text class="s-t" x="255" y="194" text-anchor="middle">石灰水</text></svg>';
+}
+function figBoil(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="枝つきフラスコに液体と沸騰石を入れて加熱している図">'
+  +'<defs><clipPath id="c10"><path d="M120,20 V62 A42,42 0 1 0 140,62 V20 Z"/></clipPath></defs>'
+  +'<path class="s-flame" d="M130,184 C118,170 126,162 130,152 C134,162 142,170 130,184 Z"/>'
+  +'<path class="s-glass-n" d="M120,20 V62 A42,42 0 1 0 140,62 V20 Z"/>'
+  +'<rect class="s-water" x="86" y="100" width="88" height="50" clip-path="url(#c10)"/>'
+  +'<circle cx="112" cy="132" r="3.5" fill="var(--muted)"/><circle cx="126" cy="138" r="3.5" fill="var(--muted)"/><circle cx="140" cy="134" r="3.5" fill="var(--muted)"/><circle cx="150" cy="126" r="3.5" fill="var(--muted)"/><circle cx="120" cy="122" r="3.5" fill="var(--muted)"/>'
+  +'<circle cx="126" cy="112" r="2" fill="none" stroke="var(--ink)"/><circle cx="138" cy="118" r="2" fill="none" stroke="var(--ink)"/>'
+  +'<path class="s-line" d="M120,20 V62 A42,42 0 1 0 140,62 V20"/>'
+  +'<text class="s-t" x="196" y="134">沸騰石</text><path class="s-thin" d="M194,130 L154,128"/>'
+  +'<text class="s-t" x="196" y="108">液体</text><path class="s-thin" d="M194,104 L166,106"/>'
+  +'<text class="s-t" x="160" y="180">加熱</text></svg>';
+}
+function figFunnel(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="ろ過の図。ガラス棒を使って液を注ぎ、ろうとの先をビーカーの内側のかべにつけている">'
+  +'<path class="s-glass-n" d="M100,100 V170 a8,8 0 0 0 8,8 H212 a8,8 0 0 0 8,-8 V100 Z"/><rect class="s-water" x="102" y="150" width="116" height="26"/>'
+  +'<path class="s-line" d="M100,100 V170 a8,8 0 0 0 8,8 H212 a8,8 0 0 0 8,-8 V100"/>'
+  +'<path class="s-glass" d="M118,28 H236 L220,86 V122 H210 V86 Z"/>'
+  +'<path class="s-dash" d="M132,34 L212,86"/>'
+  +'<path d="M62,14 L168,56" fill="none" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>'
+  +'<path class="s-line" d="M170,60 V84"/>'
+  +'<text class="s-t" x="8" y="12">ガラス棒</text>'
+  +'<text class="s-t" x="246" y="52">ろ紙</text><path class="s-thin" d="M244,48 L212,72"/>'
+  +'<text class="s-t" x="238" y="140">ろうとの先</text><path class="s-thin" d="M236,136 L222,122"/>'
+  +'<text class="s-t" x="160" y="168" text-anchor="middle">ろ液</text></svg>';
+}
+function figMicro(){
+  let o='<svg viewBox="0 0 340 190" role="img" aria-label="左は低倍率で広い範囲が見える視野、右は高倍率で細胞1つが大きく見える視野">';
+  o+='<circle class="s-glass" cx="90" cy="80" r="60"/><circle class="s-glass" cx="250" cy="80" r="60"/>';
+  [[68,58],[118,84],[84,100],[60,88],[104,114],[76,76],[112,54]].forEach(p=>{o+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="9" fill="var(--leaf-pale)" stroke="var(--ink)" stroke-width="1.5"/>';});
+  o+='<circle class="s-acc" cx="94" cy="66" r="9"/>';
+  o+='<circle cx="250" cy="80" r="36" fill="var(--leaf-pale)" stroke="var(--ink)" stroke-width="2"/><circle class="s-acc" cx="250" cy="80" r="12"/>';
+  o+='<text class="s-tb" x="90" y="158" text-anchor="middle">低倍率</text><text class="s-t" x="90" y="178" text-anchor="middle">見える範囲が広い</text>';
+  o+='<text class="s-tb" x="250" y="158" text-anchor="middle">高倍率</text><text class="s-t" x="250" y="178" text-anchor="middle">見える範囲がせまい</text>';
+  return o+'</svg>';
+}
+function figCylinder(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="葉のついた枝を入れたメスシリンダー。水面に油の層がある">'
+  +'<rect class="s-glass-n" x="130" y="30" width="60" height="140"/><rect class="s-water" x="132" y="72" width="56" height="96"/><rect x="132" y="64" width="56" height="8" fill="var(--ethanol)"/>'
+  +'<path class="s-line" d="M130,30 V170 H190 V30"/><path class="s-line" d="M160,12 V140"/>'
+  +'<ellipse class="s-leaf" cx="146" cy="24" rx="13" ry="6" transform="rotate(-25 146 24)"/><ellipse class="s-leaf" cx="174" cy="34" rx="13" ry="6" transform="rotate(25 174 34)"/>'
+  +'<text class="s-t" x="212" y="68">油</text><path class="s-thin" d="M208,64 L190,68"/>'
+  +'<text class="s-t" x="212" y="112">水</text><path class="s-thin" d="M208,108 L190,110"/>'
+  +'<text class="s-t" x="212" y="24">葉つきの枝</text><path class="s-thin" d="M208,20 L180,30"/></svg>';
+}
+function figBus(){
+  return '<svg viewBox="0 0 340 176" role="img" aria-label="バスが急ブレーキをかけ、乗っている人が前に傾いている図">'+mk('ar14')
+  +'<rect class="s-glass" x="30" y="50" width="250" height="70" rx="10"/><rect class="s-box" x="48" y="60" width="36" height="24" rx="3"/><rect class="s-box" x="224" y="60" width="36" height="24" rx="3"/>'
+  +'<circle class="s-box" cx="80" cy="124" r="14"/><circle class="s-box" cx="230" cy="124" r="14"/>'
+  +'<circle class="s-line" cx="178" cy="76" r="8"/><path class="s-line" d="M174,86 L164,112 M164,112 L156,118 M164,112 L172,118 M174,92 L186,102"/>'
+  +'<path class="s-line" d="M120,32 H220" marker-end="url(#ar14)"/><text class="s-t" x="170" y="24" text-anchor="middle">バスの進む向き</text>'
+  +'<text class="s-tb" x="155" y="162" text-anchor="middle">急ブレーキ</text></svg>';
+}
+function figBags(){
+  return '<svg viewBox="0 0 340 176" role="img" aria-label="左はふもとの小さな袋で、外から大きな力でおされている。右は山の上でふくらんだ袋で、外からの力は小さい">'+mk('ar15')
+  +'<rect class="s-glass" x="40" y="62" width="80" height="48" rx="14"/>'
+  +'<path class="s-line" d="M16,86 H34 M144,86 H126 M80,36 V56 M80,136 V116" marker-end="url(#ar15)"/>'
+  +'<rect class="s-glass" x="190" y="38" width="112" height="86" rx="28"/>'
+  +'<path class="s-line" d="M176,81 H184 M316,81 H308 M246,26 V32 M246,136 V130" marker-end="url(#ar15)"/>'
+  +'<text class="s-tb" x="80" y="164" text-anchor="middle">ふもと</text><text class="s-tb" x="246" y="164" text-anchor="middle">山の上</text>'
+  +'<text class="s-tm" x="170" y="14" text-anchor="middle">矢印は外から袋をおす力</text></svg>';
+}
+function figCup(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="発泡ポリスチレンのカップに水と電熱線と温度計を入れ、ふたをした図">'
+  +'<path class="s-glass-n" d="M100,60 L118,150 H222 L240,60 Z"/><path class="s-water" d="M104.8,84 H235.2 L222,150 H118 Z"/>'
+  +'<path class="s-line" d="M100,60 L118,150 H222 L240,60"/><rect class="s-metal" x="96" y="52" width="148" height="8" rx="2"/>'
+  +'<path class="s-line" style="stroke:var(--accent)" d="M130,134 l10,-14 l10,14 l10,-14 l10,14 l10,-14 l10,14 l10,-14 l10,14"/>'
+  +'<rect class="s-box" x="176" y="30" width="8" height="90" rx="3"/><circle class="s-box" cx="180" cy="122" r="6"/>'
+  +'<text class="s-t" x="196" y="40">温度計</text><text class="s-t" x="262" y="136">電熱線</text><path class="s-thin" d="M260,132 L214,128"/>'
+  +'<text class="s-t" x="262" y="62">ふた</text><path class="s-thin" d="M260,58 L246,56"/>'
+  +'<text class="s-t" x="170" y="176" text-anchor="middle">発泡ポリスチレンのカップ</text></svg>';
+}
+function figCool(){
+  let o='<svg viewBox="0 0 340 170" role="img" aria-label="冷たい水を入れた金属のコップ。外側に水滴がつき、まわりに水蒸気がある">';
+  o+='<rect class="s-glass-n" x="130" y="40" width="80" height="100"/><rect class="s-water" x="132" y="70" width="76" height="68"/><path class="s-line" d="M130,40 V140 H210 V40"/>';
+  [[125,80],[125,100],[124,118],[215,90],[216,110],[215,126]].forEach(p=>{o+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="var(--blue)" opacity=".8"/>';});
+  [[90,56],[100,90],[70,110],[250,60],[272,96],[246,132],[60,66]].forEach(p=>{o+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.5" fill="none" stroke="var(--muted)" stroke-width="1.4"/>';});
+  o+='<text class="s-t" x="170" y="110" text-anchor="middle">冷たい水</text>';
+  o+='<text class="s-t" x="8" y="152">水滴</text><path class="s-thin" d="M36,148 L120,120"/>';
+  o+='<text class="s-t" x="232" y="28">空気中の水蒸気</text><path class="s-thin" d="M270,34 L262,56"/>';
+  return o+'</svg>';
+}
+function figUp(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="空気のかたまりが上昇するほど大きくなる図。上空ほど気圧が低い">'+mk('ar18')
+  +'<path class="s-line" d="M10,178 H330"/>'
+  +'<circle class="s-glass" cx="150" cy="154" r="14"/><circle class="s-glass" cx="150" cy="98" r="22"/><circle class="s-glass" cx="150" cy="36" r="30"/>'
+  +'<path class="s-line" d="M150,136 V124 M150,72 V68" marker-end="url(#ar18)"/>'
+  +'<text class="s-t" x="196" y="158">気圧が高い</text><text class="s-t" x="196" y="40">気圧が低い</text>'
+  +'<text class="s-t" x="196" y="102">上昇する</text>'
+  +'<text class="s-tm" x="8" y="30">ぼう張する</text><text class="s-tm" x="8" y="46">温度が下がる</text><text class="s-tm" x="8" y="158">地表近く</text></svg>';
+}
+function figSeaWind(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="昼の海と陸。陸の上で上昇気流が起こり、海から陸へ風がふく">'+mk('ar19')
+  +'<rect class="s-water" x="10" y="130" width="150" height="40"/><path class="s-sponge" d="M160,130 H330 V170 H160 Z"/>'
+  +'<text class="s-tb" x="84" y="156" text-anchor="middle">海</text><text class="s-tb" x="245" y="156" text-anchor="middle">陸</text>'
+  +'<circle class="s-flame" cx="290" cy="26" r="14"/>'
+  +'<path class="s-line" d="M60,118 H210" marker-end="url(#ar19)"/><text class="s-t" x="120" y="110">海から陸へ</text>'
+  +'<path class="s-line" d="M262,118 V64" marker-end="url(#ar19)"/><text class="s-t" x="270" y="94">上昇気流</text>'
+  +'<path class="s-line" d="M240,48 H100" marker-end="url(#ar19)"/><text class="s-tm" x="170" y="40" text-anchor="middle">上空では陸から海へ</text></svg>';
+}
+function figSnow(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="冬の季節風が日本海の上で水蒸気をふくみ、山脈にぶつかって上昇し、雪雲ができる図">'+mk('ar20')
+  +'<rect class="s-water" x="10" y="140" width="140" height="30"/><path class="s-sponge" d="M150,140 H330 V170 H150 Z"/>'
+  +'<path d="M200,140 L250,72 L300,140 Z" fill="var(--metal)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>'
+  +'<text class="s-tb" x="80" y="160" text-anchor="middle">日本海</text><text class="s-t" x="250" y="132" text-anchor="middle">山脈</text>'
+  +'<path class="s-line" d="M16,112 C100,112 170,110 228,82" marker-end="url(#ar20)"/><text class="s-t" x="12" y="100">冬の季節風</text>'
+  +'<ellipse cx="232" cy="46" rx="30" ry="13" fill="var(--glass)" stroke="var(--ink)" stroke-width="2"/><text class="s-t" x="276" y="50">雪雲</text>'
+  +'<circle cx="214" cy="66" r="2.5" fill="var(--ink)"/><circle cx="226" cy="76" r="2.5" fill="var(--ink)"/><circle cx="208" cy="82" r="2.5" fill="var(--ink)"/><circle cx="220" cy="92" r="2.5" fill="var(--ink)"/></svg>';
+}
+function solubChart(){
+  const X=T=>44+(T-20)/60*270,Y=g=>150-g/180*125;
+  let o='<svg viewBox="0 0 340 196" role="img" aria-label="硝酸カリウムは温度が上がると溶解度が大きくふえ、塩化ナトリウムはほとんど変わらないグラフ">';
+  [0,60,120,180].forEach(g=>{o+='<line class="s-dash" x1="44" y1="'+Y(g)+'" x2="320" y2="'+Y(g)+'"/><text class="s-t" x="38" y="'+(Y(g)+4)+'" text-anchor="end">'+g+'</text>';});
+  [20,40,60,80].forEach(T=>{o+='<line class="s-line" x1="'+X(T)+'" y1="150" x2="'+X(T)+'" y2="155"/><text class="s-t" x="'+X(T)+'" y="169" text-anchor="middle">'+T+'</text>';});
+  o+='<line class="s-line" x1="44" y1="150" x2="320" y2="150"/><line class="s-line" x1="44" y1="22" x2="44" y2="150"/>';
+  const K=[[20,31.6],[40,63.9],[60,109.2],[80,169]],N=[[20,35.8],[40,36.3],[60,37.1],[80,38]];
+  o+='<polyline class="s-line" style="stroke:var(--accent);stroke-width:3" points="'+K.map(p=>X(p[0])+','+Y(p[1])).join(' ')+'"/>';
+  o+='<polyline class="s-line" points="'+N.map(p=>X(p[0])+','+Y(p[1])).join(' ')+'"/>';
+  K.forEach(p=>{o+='<circle class="s-acc" cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="3.5"/>';});
+  N.forEach(p=>{o+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="3.5" fill="var(--ink)"/>';});
+  o+='<text class="s-tb" x="104" y="62" style="fill:var(--accent)">硝酸カリウム</text><text class="s-tb" x="170" y="116">塩化ナトリウム</text>';
+  o+='<text class="s-tm" x="8" y="14">水100gにとける質量（g）</text><text class="s-tm" x="320" y="188" text-anchor="end">温度（℃）</text>';
+  return o+'</svg>';
+}
+function figWork(){
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="左は物体を0.5m直接持ち上げる図、右は長さ1.0mの斜面を使って0.5m持ち上げる図">'+mk('ar21')
+  +'<path class="s-line" d="M20,150 H150"/><rect class="s-block" x="40" y="120" width="30" height="30"/><rect class="s-dash" x="40" y="60" width="30" height="30"/>'
+  +'<path class="s-line" d="M55,116 V94" marker-end="url(#ar21)"/><text class="s-t" x="78" y="108">0.5m</text>'
+  +'<text class="s-tb" x="85" y="176" text-anchor="middle">直接持ち上げる</text>'
+  +'<path class="s-line" d="M180,150 H330"/><path class="s-sponge" d="M206,150 H310 V90 Z"/>'
+  +'<g transform="translate(223,140) rotate(-30)"><rect class="s-block" x="-13" y="-22" width="26" height="22"/></g>'
+  +'<path class="s-line" d="M198,136 L302,76" marker-end="url(#ar21)"/><text class="s-t" x="226" y="86">1.0m</text>'
+  +'<text class="s-tb" x="258" y="176" text-anchor="middle">斜面を使う</text></svg>';
+}
+function tubes4(){
+  const xs=[55,125,195,265],cols=['#5B4B9A','#D8C060','var(--blue)','#B5651D'],names=['A','B','C','D'];
+  let o='<svg viewBox="0 0 340 170" role="img" aria-label="試験管A〜D。Aは青紫色、Bは黄色っぽく変化なし、Cは青色のまま、Dは赤かっ色">';
+  xs.forEach((x,i)=>{
+    o+='<path class="s-glass-n" d="M'+(x-15)+',26 V112 a15,15 0 0 0 30,0 V26 Z"/>';
+    o+='<path d="M'+(x-15)+',60 H'+(x+15)+' V112 a15,15 0 0 1 -30,0 Z" fill="'+cols[i]+'" opacity=".9"/>';
+    o+='<path class="s-line" d="M'+(x-15)+',26 V112 a15,15 0 0 0 30,0 V26"/>';
+    o+='<text class="s-tb" x="'+x+'" y="150" text-anchor="middle">'+names[i]+'</text>';
+  });
+  o+='<text class="s-t" x="90" y="14" text-anchor="middle">ヨウ素液を加えた</text><text class="s-t" x="230" y="14" text-anchor="middle">ベネジクト液を加えて加熱</text>';
+  return o+'</svg>';
+}
+function figAsh(){
+  function col(x,layers,label){
+    let o='',y=30;
+    layers.forEach(l=>{o+='<rect x="'+x+'" y="'+y+'" width="90" height="'+l[1]+'" fill="'+l[2]+'" stroke="var(--ink)" stroke-width="1.5"/>';if(l[0])o+='<text class="s-t" x="'+(x+45)+'" y="'+(y+l[1]/2+4)+'" text-anchor="middle">'+l[0]+'</text>';y+=l[1];});
+    return o+'<text class="s-tb" x="'+(x+45)+'" y="20" text-anchor="middle">'+label+'</text>';
+  }
+  let o='<svg viewBox="0 0 340 190" role="img" aria-label="A地点とB地点の柱状図。どちらにも火山灰の層があり、点線で結ばれている">';
+  o+=col(40,[['砂',36,'var(--sponge)'],['',14,'#8a8a8a'],['泥',40,'var(--leaf-pale)'],['れき',40,'var(--metal)']],'A地点');
+  o+=col(200,[['砂',18,'var(--sponge)'],['泥',30,'var(--leaf-pale)'],['',14,'#8a8a8a'],['砂',30,'var(--sponge)'],['れき',38,'var(--metal)']],'B地点');
+  o+='<path class="s-dash" d="M130,73 L200,85"/>';
+  o+='<text class="s-t" x="2" y="76">火山灰</text><text class="s-t" x="296" y="88">火山灰</text>';
+  return o+'</svg>';
+}
+function figSun(){
+  let o='<svg viewBox="0 0 340 192" role="img" aria-label="同じはばの太陽の光が地面に当たる図。左の夏は高い角度で当たり、光があたる広さがせまい。右の冬は低い角度で当たり、広い">'+mk('ar22');
+  o+='<path class="s-line" d="M10,140 H160 M175,140 H330"/>';
+  [70,86,102].forEach(x=>{o+='<path class="s-line" d="M'+(x-24)+',74 L'+x+',140" marker-end="url(#ar22)"/>';});
+  [260,290,320].forEach(x=>{o+='<path class="s-line" d="M'+(x-61)+',105 L'+x+',140" marker-end="url(#ar22)"/>';});
+  o+='<path d="M70,140 H102" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/><path d="M260,140 H320" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>';
+  o+='<text class="s-tm" x="170" y="14" text-anchor="middle">同じはばの太陽の光</text>';
+  o+='<text class="s-tb" x="85" y="164" text-anchor="middle">夏（南中高度が高い）</text><text class="s-tm" x="85" y="182" text-anchor="middle">光があたる広さ：せまい</text>';
+  o+='<text class="s-tb" x="255" y="164" text-anchor="middle">冬（南中高度が低い）</text><text class="s-tm" x="255" y="182" text-anchor="middle">光があたる広さ：広い</text>';
+  return o+'</svg>';
+}
+function figMoon(){
+  let o='<svg viewBox="0 0 340 200" role="img" aria-label="太陽の光を左から受ける地球と、そのまわりの4つの位置の月。どの位置でも月の左半分が光っている">'+mk('ar23');
+  o+='<circle cx="170" cy="100" r="70" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/>';
+  [60,100,140].forEach(y=>{o+='<path class="s-line" d="M8,'+y+' H48" marker-end="url(#ar23)"/>';});
+  o+='<text class="s-t" x="8" y="46">太陽の光</text>';
+  o+='<circle class="s-acc" cx="170" cy="100" r="16"/><text class="s-t" x="170" y="130" text-anchor="middle">地球</text>';
+  [[100,100],[170,30],[240,100],[170,170]].forEach(p=>{o+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="11" fill="#555" stroke="var(--ink)" stroke-width="1.5"/><path d="M'+p[0]+','+(p[1]-11)+' A11,11 0 0 0 '+p[0]+','+(p[1]+11)+' Z" fill="var(--powder)"/>';});
+  o+='<text class="s-tm" x="262" y="104">月</text><text class="s-tm" x="200" y="28">月の通り道</text>';
+  return o+'</svg>';
+}
+function figVenus(){
+  let o='<svg viewBox="0 0 340 214" role="img" aria-label="太陽、金星の軌道、地球の軌道の図。地球から金星が見える方向は、太陽のまわりのせまい範囲だけ">'+mk('ar24');
+  o+='<circle cx="170" cy="95" r="80" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 3"/>';
+  o+='<circle cx="170" cy="95" r="45" fill="none" stroke="var(--ink)" stroke-width="1.5"/>';
+  o+='<circle class="s-flame" cx="170" cy="95" r="11"/><text class="s-t" x="170" y="80" text-anchor="middle">太陽</text>';
+  o+='<path d="M170,175 L218,104 M170,175 L122,104" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/>';
+  o+='<circle cx="207" cy="120" r="5" fill="var(--leaf)" stroke="var(--ink)"/><circle cx="133" cy="120" r="5" fill="var(--leaf)" stroke="var(--ink)"/>';
+  o+='<circle class="s-acc" cx="170" cy="175" r="8"/><text class="s-t" x="184" y="180">地球</text>';
+  o+='<path class="s-line" d="M170,186 V204" marker-end="url(#ar24)"/><text class="s-t" x="178" y="208">真夜中の方向</text>';
+  o+='<text class="s-tm" x="232" y="34">地球の軌道</text><text class="s-tm" x="214" y="66">金星の軌道</text>';
+  o+='<text class="s-tm" x="4" y="92">金星が</text><text class="s-tm" x="4" y="106">見える範囲</text>';
+  return o+'</svg>';
+}
+function figRock(){
+  let o='<svg viewBox="0 0 340 170" role="img" aria-label="左は小さなつぶの中に大きな結晶がある火山岩。右は大きなつぶがぎっしり組み合わさった深成岩">';
+  o+='<rect x="20" y="20" width="130" height="90" fill="var(--metal)" stroke="var(--ink)" stroke-width="2"/>';
+  for(let i=0;i<9;i++)for(let j=0;j<6;j++){o+='<circle cx="'+(28+i*14+(j%2)*5)+'" cy="'+(28+j*15)+'" r="1.6" fill="var(--ink)"/>';}
+  o+='<path d="M50,38 L76,38 L80,62 L55,66 Z M100,72 L130,68 L134,94 L104,98 Z" fill="var(--powder)" stroke="var(--ink)" stroke-width="1.5"/>';
+  const P=[['190,20 235,20 228,62 190,58','var(--powder)'],['235,20 290,20 282,55 228,62','var(--sponge)'],['290,20 320,20 320,66 282,55','var(--powder)'],['190,58 228,62 222,110 190,110','var(--sponge)'],['228,62 282,55 290,110 222,110','var(--powder)'],['282,55 320,66 320,110 290,110','var(--sponge)']];
+  P.forEach(p=>{o+='<polygon points="'+p[0]+'" fill="'+p[1]+'" stroke="var(--ink)" stroke-width="1.5"/>';});
+  o+='<text class="s-tb" x="85" y="134" text-anchor="middle">火山岩</text><text class="s-tm" x="85" y="152" text-anchor="middle">小さなつぶの中に大きな結晶</text>';
+  o+='<text class="s-tb" x="255" y="134" text-anchor="middle">深成岩</text><text class="s-tm" x="255" y="152" text-anchor="middle">大きなつぶだけ</text>';
+  return o+'</svg>';
+}
+function figRefract(){
+  let o='<svg viewBox="0 0 340 190" role="img" aria-label="水中のコインから出た光が水面で曲がって目にとどく図。目には、点線の浅い位置にコインがあるように見える">'+mk('ar25');
+  o+='<rect class="s-water" x="10" y="100" width="320" height="80"/><path class="s-line" d="M10,100 H330"/>';
+  o+='<path class="s-dash" d="M170,50 V150"/>';
+  o+='<path d="M240,160 L170,100" fill="none" stroke="var(--ink)" stroke-width="2"/>';
+  o+='<path d="M170,100 L52,36" fill="none" stroke="var(--ink)" stroke-width="2" marker-end="url(#ar25)"/>';
+  o+='<path d="M170,100 L240,138" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/>';
+  o+='<circle cx="240" cy="160" r="8" fill="var(--flame)" stroke="var(--ink)" stroke-width="1.5"/><circle cx="240" cy="138" r="8" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3 3"/>';
+  o+='<circle cx="36" cy="28" r="7" fill="none" stroke="var(--ink)" stroke-width="2"/><text class="s-t" x="22" y="14">目</text>';
+  o+='<text class="s-t" x="14" y="92">空気</text><text class="s-t" x="14" y="120">水</text>';
+  o+='<text class="s-t" x="254" y="142">見える位置</text><text class="s-t" x="254" y="168">コインの位置</text>';
+  return o+'</svg>';
+}
+function figRough(){
+  let o='<svg viewBox="0 0 340 170" role="img" aria-label="左はなめらかな面で光が同じ向きに反射する図。右はざらざらした面で光がいろいろな向きに反射する図">'+mk('ar26');
+  o+='<path class="s-line" style="stroke-width:3" d="M10,110 H160"/>';
+  [50,80,110].forEach(x=>{o+='<path class="s-line" d="M'+(x-30)+',40 L'+x+',108" marker-end="url(#ar26)"/><path class="s-line" d="M'+x+',108 L'+(x+30)+',40" marker-end="url(#ar26)"/>';});
+  o+='<path class="s-line" style="stroke-width:3" d="M180,110 l10,-8 l10,10 l10,-10 l10,10 l10,-8 l10,8 l10,-10 l10,10 l10,-8 l10,8 l10,-10 l10,10"/>';
+  [[210,104,180,40],[240,100,250,40],[270,104,320,56]].forEach(p=>{o+='<path class="s-line" d="M'+(p[0]-30)+',40 L'+p[0]+','+p[1]+'" marker-end="url(#ar26)"/><path class="s-line" d="M'+p[0]+','+p[1]+' L'+p[2]+','+p[3]+'" marker-end="url(#ar26)"/>';});
+  o+='<text class="s-tb" x="85" y="136" text-anchor="middle">なめらかな面</text><text class="s-tm" x="85" y="154" text-anchor="middle">光は同じ向きに反射</text>';
+  o+='<text class="s-tb" x="255" y="136" text-anchor="middle">ざらざらした紙</text><text class="s-tm" x="255" y="154" text-anchor="middle">光はいろいろな向きに反射</text>';
+  return o+'</svg>';
+}
+function figCoil(){
+  let o='<svg viewBox="0 0 340 170" role="img" aria-label="コイルに棒磁石を近づけ、コイルにつないだ検流計の針がふれる図">'+mk('ar27');
+  [130,148,166,184,202].forEach(x=>{o+='<ellipse cx="'+x+'" cy="90" rx="7" ry="26" fill="none" stroke="var(--ink)" stroke-width="2"/>';});
+  o+='<path class="s-line" d="M130,64 V40 H270 V68 M202,116 V150 H270 V112"/>';
+  o+='<rect x="40" y="80" width="45" height="20" fill="var(--accent)" stroke="var(--ink)" stroke-width="1.5"/><rect x="85" y="80" width="45" height="20" fill="var(--metal)" stroke="var(--ink)" stroke-width="1.5"/>';
+  o+='<text class="s-tb" x="62" y="95" text-anchor="middle" style="fill:var(--accent-ink)">N</text><text class="s-tb" x="107" y="95" text-anchor="middle">S</text>';
+  o+='<path class="s-line" d="M8,90 H34" marker-end="url(#ar27)"/><text class="s-t" x="8" y="70">磁石を近づける</text>';
+  o+='<circle class="s-box" cx="270" cy="90" r="22"/><path class="s-line" d="M270,90 L262,76"/><text class="s-t" x="298" y="94">検流計</text><text class="s-t" x="150" y="136">コイル</text>';
+  return o+'</svg>';
+}
+function figCircuit(){
+  let o='<svg viewBox="0 0 340 180" role="img" aria-label="電源に2つの電気器具が並列につながれた回路の図">';
+  o+='<path class="s-line" d="M70,30 H270 M70,150 H270 M70,30 V72 M70,108 V150 M150,30 V74 M150,106 V150 M230,30 V74 M230,106 V150"/>';
+  o+='<rect class="s-box" x="56" y="72" width="28" height="36" rx="3"/>';
+  [150,230].forEach(x=>{o+='<circle class="s-box" cx="'+x+'" cy="90" r="16"/><path class="s-line" d="M'+(x-11)+',79 L'+(x+11)+',101 M'+(x-11)+',101 L'+(x+11)+',79"/>';});
+  o+='<text class="s-t" x="6" y="88">電源</text><text class="s-tb" x="6" y="106">100V</text>';
+  o+='<text class="s-t" x="150" y="172" text-anchor="middle">器具A</text><text class="s-t" x="230" y="172" text-anchor="middle">器具B</text>';
+  return o+'</svg>';
+}
+function figIon(){
+  let o='<svg viewBox="0 0 340 190" role="img" aria-label="水素イオンと水酸化物イオンが結びついて水になり、ナトリウムイオンと塩化物イオンは水溶液中に残る図">'+mk('ar28');
+  o+='<circle class="s-acc" cx="50" cy="50" r="20"/><text class="s-tb" x="50" y="55" text-anchor="middle" style="fill:var(--accent-ink)">H+</text>';
+  o+='<text class="s-tb" x="80" y="55" text-anchor="middle">＋</text>';
+  o+='<circle cx="110" cy="50" r="20" fill="var(--mark)" stroke="var(--ink)" stroke-width="1.5"/><text class="s-tb" x="110" y="55" text-anchor="middle">OH−</text>';
+  o+='<path class="s-line" d="M140,50 H178" marker-end="url(#ar28)"/><text class="s-tm" x="159" y="38" text-anchor="middle">結びつく</text>';
+  o+='<ellipse cx="226" cy="50" rx="32" ry="20" class="s-water" stroke="var(--ink)" stroke-width="1.5"/><text class="s-tb" x="226" y="55" text-anchor="middle">H2O</text>';
+  o+='<text class="s-tm" x="80" y="90" text-anchor="middle">酸性のもと　アルカリ性のもと</text>';
+  o+='<circle cx="50" cy="140" r="20" fill="var(--sponge)" stroke="var(--ink)" stroke-width="1.5"/><text class="s-tb" x="50" y="145" text-anchor="middle">Na+</text>';
+  o+='<circle cx="110" cy="140" r="20" fill="var(--leaf-pale)" stroke="var(--ink)" stroke-width="1.5"/><text class="s-tb" x="110" y="145" text-anchor="middle">Cl−</text>';
+  o+='<text class="s-t" x="144" y="144">水溶液中にそのまま残る</text>';
+  return o+'</svg>';
+}
+function figGas(){
+  return '<svg viewBox="0 0 340 200" role="img" aria-label="フラスコで酸素を発生させ、管で水そうの試験管に水上置換法で集める図">'+mk('ar29')
+  +'<path class="s-glass-n" d="M62,70 V105 A30,30 0 1 0 78,105 V70 Z"/><path d="M42,140 H98 L100,152 A30,30 0 0 1 40,152 Z" fill="var(--water)"/><path class="s-line" d="M62,70 V105 A30,30 0 1 0 78,105 V70"/>'
+  +'<rect class="s-metal" x="60" y="62" width="20" height="10" rx="2"/>'
+  +'<path d="M70,62 V48 H255 V120" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>'
+  +'<rect class="s-water" x="190" y="132" width="130" height="40"/><path class="s-line" d="M188,120 V172 H322 V120"/>'
+  +'<path class="s-water" d="M238,150 V86 a17,17 0 0 1 34,0 V150 Z"/><path class="s-line" d="M238,150 V86 a17,17 0 0 1 34,0 V150"/>'
+  +'<circle cx="255" cy="114" r="2.5" fill="none" stroke="var(--ink)"/><circle cx="250" cy="104" r="2" fill="none" stroke="var(--ink)"/>'
+  +'<text class="s-t" x="100" y="40">はじめに出る気体</text><text class="s-t" x="8" y="192">オキシドール＋二酸化マンガン</text></svg>';
+}
+function figArtery(){
+  return '<svg viewBox="0 0 340 172" role="img" aria-label="動脈と静脈の断面。動脈は壁が厚く、静脈は壁がうすい">'
+  +'<circle cx="90" cy="76" r="42" fill="var(--leaf-pale)" stroke="var(--ink)" stroke-width="2"/><circle cx="90" cy="76" r="18" fill="#C0392B" stroke="var(--ink)" stroke-width="1.5"/>'
+  +'<circle cx="250" cy="76" r="42" fill="var(--leaf-pale)" stroke="var(--ink)" stroke-width="2"/><circle cx="250" cy="76" r="36" fill="#C0392B" stroke="var(--ink)" stroke-width="1.5"/>'
+  +'<text class="s-tb" x="90" y="146" text-anchor="middle">動脈</text><text class="s-tm" x="90" y="164" text-anchor="middle">壁が厚い</text>'
+  +'<text class="s-tb" x="250" y="146" text-anchor="middle">静脈</text><text class="s-tm" x="250" y="164" text-anchor="middle">壁がうすい</text></svg>';
+}
+function figVein(){
+  return '<svg viewBox="0 0 340 170" role="img" aria-label="静脈の内側にある弁。血液は右へ流れ、弁があるので左へはもどれない">'+mk('ar30')
+  +'<rect x="20" y="50" width="300" height="60" fill="#C0392B" opacity=".28"/><path class="s-line" d="M20,50 H320 M20,110 H320"/>'
+  +'<path class="s-line" d="M120,50 L152,76 M120,110 L152,84 M230,50 L262,76 M230,110 L262,84"/>'
+  +'<path class="s-line" d="M30,80 H96" marker-end="url(#ar30)"/><text class="s-t" x="30" y="40">血液の流れ</text>'
+  +'<path d="M312,80 H278" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ar30)"/><text class="s-tb" x="296" y="72" text-anchor="middle">×</text><text class="s-tm" x="296" y="130" text-anchor="middle">逆流</text>'
+  +'<text class="s-tb" x="136" y="146" text-anchor="middle">弁</text><path class="s-thin" d="M136,132 L136,96"/></svg>';
+}
+function figTubesBTB(){
+  const xs=[40,100,160,220,280],cols=['var(--yellow)','var(--yellow)','#4CAF50','var(--blue)','var(--blue)'],lb=['0','5','10','15','20'];
+  let o='<svg viewBox="0 0 340 170" role="img" aria-label="加えた量ごとのBTB溶液の色。0と5は黄色、10は緑色、15と20は青色">';
+  xs.forEach((x,i)=>{
+    o+='<path class="s-glass-n" d="M'+(x-14)+',20 V100 a14,14 0 0 0 28,0 V20 Z"/>';
+    o+='<path d="M'+(x-14)+',48 H'+(x+14)+' V100 a14,14 0 0 1 -28,0 Z" fill="'+cols[i]+'" opacity=".9"/>';
+    o+='<path class="s-line" d="M'+(x-14)+',20 V100 a14,14 0 0 0 28,0 V20"/>';
+    o+='<text class="s-tb" x="'+x+'" y="140" text-anchor="middle">'+lb[i]+'</text>';
+  });
+  o+='<text class="s-tm" x="170" y="162" text-anchor="middle">加えた水酸化ナトリウム水溶液（mL）</text>';
+  return o+'</svg>';
+}
+function figBuoy(){
+  const xs=[14,130,246],by=[50,76,110],lb=['ア（水にふれる前）','イ（半分入った）','ウ（すべて入った）'];
+  let o='<svg viewBox="0 0 340 200" role="img" aria-label="ばねばかりにつるした物体を、水に少しずつ沈めていく図。アは水の上、イは半分、ウはすべて水中">';
+  xs.forEach((x,i)=>{
+    const cx=x+40;
+    o+='<rect class="s-water" x="'+(x+2)+'" y="90" width="76" height="80"/><path class="s-line" d="M'+x+',60 V162 a8,8 0 0 0 8,8 H'+(x+72)+' a8,8 0 0 0 8,-8 V60"/>';
+    o+='<path class="s-line" d="M'+cx+',14 V'+by[i]+'"/><rect class="s-box" x="'+(cx-8)+'" y="6" width="16" height="12" rx="2"/>';
+    o+='<rect class="s-block" x="'+(cx-12)+'" y="'+by[i]+'" width="24" height="30"/>';
+    o+='<text class="s-t" x="'+cx+'" y="190" text-anchor="middle">'+lb[i]+'</text>';
+  });
+  return o+'</svg>';
+}
+function figFull(){
+  return '<svg viewBox="0 0 340 150" role="img" aria-label="太陽、地球、満月が一直線にならぶ図。地球の真夜中の側から満月が見える">'
+  +'<path class="s-dash" d="M48,75 H300"/>'
+  +'<circle class="s-flame" cx="30" cy="75" r="18"/><circle class="s-acc" cx="170" cy="75" r="30"/><circle cx="310" cy="75" r="10" fill="var(--powder)" stroke="var(--ink)" stroke-width="1.5"/>'
+  +'<circle cx="203" cy="75" r="3.5" fill="var(--ink)"/><path class="s-line" d="M203,78 V86"/>'
+  +'<text class="s-t" x="30" y="112" text-anchor="middle">太陽</text><text class="s-t" x="170" y="124" text-anchor="middle">地球</text><text class="s-t" x="310" y="100" text-anchor="middle">満月</text>'
+  +'<text class="s-t" x="214" y="44">真夜中の場所</text><path class="s-thin" d="M236,50 L206,70"/></svg>';
+}
+function figFuiri(){
+  return '<svg viewBox="0 0 340 172" role="img" aria-label="ふ入りの葉。中央は緑色、ふちは白い">'
+  +'<path d="M40,85 C90,10 250,10 300,85 C250,160 90,160 40,85 Z" fill="var(--powder)" stroke="var(--ink)" stroke-width="2"/>'
+  +'<path d="M70,85 C105,35 235,35 270,85 C235,135 105,135 70,85 Z" fill="var(--leaf)"/>'
+  +'<path class="s-line" d="M40,85 H300"/>'
+  +'<text class="s-t" x="170" y="20" text-anchor="middle">緑色の部分</text><path class="s-thin" d="M170,26 L170,56"/>'
+  +'<text class="s-t" x="238" y="166">白い部分（ふ）</text><path class="s-thin" d="M284,150 L286,92"/></svg>';
+}
+/*DATA_END*/
+
+const KEY='rika-kijutsu-v1';
+let store={};
+try{store=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){store={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function figOf(q){return typeof q.fig==='function'?q.fig():q.fig==='tubes3()'?tubes3():q.fig==='seismo()'?seismo():q.fig}
+
+function evaluate(q,text){
+  const t=text.normalize('NFKC');
+  const res=q.groups.map(g=>({label:g.label,bonus:!!g.bonus,hit:g.re.test(t)}));
+  const end=/(から|ため)[。．.\s]*$/.test(t.trim());
+  return {res,end};
+}
+
+function cardHTML(q){
+  return '<article class="q" id="q-'+q.id+'" data-id="'+q.id+'">'
+   +'<div class="q-head"><span class="q-no">'+q.no+'</span><span class="q-field">'+q.field+'</span></div>'
+   +'<p class="q-text">'+q.prompt+'</p>'
+   +'<div class="fig">'+figOf(q)+'</div>'
+   +(q.table||'')
+   +'<label class="ans-label" for="a-'+q.id+'">あなたの答え</label>'
+   +'<textarea id="a-'+q.id+'" rows="3" placeholder="ここに書く。まちがっていてもOK。"></textarea>'
+   +'<div class="actions"><button class="btn primary" type="button" data-act="check">答え合わせ</button>'
+   +'<button class="btn" type="button" data-act="hint">書けないときは「型」を見る</button></div>'
+   +'<p class="hint" hidden><b>答えの型</b>'+esc(q.template)+'</p>'
+   +'<div class="result" hidden aria-live="polite"></div>'
+   +'</article>';
+}
+
+function showResult(q){
+  const card=document.getElementById('q-'+q.id);
+  const ta=card.querySelector('textarea');
+  const box=card.querySelector('.result');
+  const text=ta.value.trim();
+  if(text.length<4){
+    box.hidden=false;
+    box.innerHTML='<p class="note">まず自分のことばで書いてみよう。まちがっていてOK。書けないときは「型」を見てから書く。</p>';
+    return;
+  }
+  const {res,end}=evaluate(q,text);
+  const req=res.filter(r=>!r.bonus), got=req.filter(r=>r.hit).length;
+  const allReq=got===req.length;
+  const chips=res.map(r=>'<li class="chip '+(r.hit?'hit':'miss')+(r.bonus?' bonus':'')+'">'+(r.hit?'○ ':'× ')+esc(r.label)+(r.bonus?'（あると安心）':'')+'</li>').join('')
+    +(q.noEnd?'':'<li class="chip '+(end?'hit':'miss')+'">'+(end?'○ ':'× ')+'文末が「〜から」「〜ため」</li>');
+  const g=(store[q.id]&&store[q.id].grade)||'';
+  const gb=(v,l)=>'<button class="btn" type="button" data-grade="'+v+'" aria-pressed="'+(g===v)+'">'+l+'</button>';
+  box.hidden=false;
+  box.innerHTML=
+   '<h3 class="res-title">'+(allReq&&(end||q.noEnd)?'キーワードがそろっているよ':'足りないことばがあるよ')+'（'+got+' / '+req.length+'）</h3>'
+   +'<ul class="chips">'+chips+'</ul>'
+   +'<div class="model"><b>模範解答</b><p>'+esc(q.model)+'</p></div>'
+   +'<p class="note">'+esc(q.point)+'</p>'
+   +(q.why?'<div class="why"><b>'+esc(q.why[0])+'</b>'+q.why[1].map(s=>'<p>'+esc(s)+'</p>').join('')+'</div>':'')
+   +'<p class="note"><span class="mk">'+esc(q.trap)+'</span></p>'
+   +'<p class="note small">ことばの自動チェックは目安です。言いかえでも正解のことがあります。模範解答と見比べて、自分で採点してください。</p>'
+   +'<div class="grade"><span class="grade-label">自分で採点</span><div class="grade-row">'
+   +gb('ok','○ 書けた')+gb('close','△ おしい')+gb('ng','× 書けなかった')
+   +'<button class="btn" type="button" data-act="reset">書きなおす</button></div></div>';
+}
+
+function updateBars(){
+  ['t','h'].forEach(s=>{
+    const list=Q.filter(q=>q.set===s);
+    const n=list.filter(q=>store[q.id]&&store[q.id].grade==='ok').length;
+    const bar=document.querySelector('[data-bar="'+s+'"]');
+    bar.querySelector('.bar-text').textContent='○ '+n+' / '+list.length;
+    bar.querySelector('.fill').style.width=(100*n/list.length)+'%';
+  });
+}
+
+function init(){
+  ['t','h'].forEach(s=>{
+    document.querySelector('[data-list="'+s+'"]').innerHTML=Q.filter(q=>q.set===s).map(cardHTML).join('');
+  });
+  Q.forEach(q=>{
+    const st=store[q.id];
+    if(st&&st.text){
+      document.querySelector('#a-'+q.id).value=st.text;
+      if(st.checked) showResult(q);
+    }
+  });
+  updateBars();
+}
+
+document.addEventListener('click',e=>{
+  const tab=e.target.closest('.tab');
+  if(tab){
+    ['t','h'].forEach(s=>{
+      const on=tab.dataset.set===s;
+      document.getElementById('tab-'+s).setAttribute('aria-selected',String(on));
+      document.getElementById('panel-'+s).hidden=!on;
+    });
+    return;
+  }
+  const card=e.target.closest('.q'); if(!card) return;
+  const q=Q.find(x=>x.id===card.dataset.id);
+  const act=e.target.closest('[data-act]');
+  const gr=e.target.closest('[data-grade]');
+  const ta=card.querySelector('textarea');
+  if(act&&act.dataset.act==='hint'){
+    const h=card.querySelector('.hint'); h.hidden=!h.hidden;
+  }else if(act&&act.dataset.act==='check'){
+    store[q.id]=Object.assign(store[q.id]||{}, {text:ta.value, checked:ta.value.trim().length>=4});
+    save(); showResult(q);
+  }else if(act&&act.dataset.act==='reset'){
+    delete store[q.id]; save(); ta.value=''; card.querySelector('.result').hidden=true; card.querySelector('.result').innerHTML=''; updateBars(); ta.focus();
+  }else if(gr){
+    store[q.id]=Object.assign(store[q.id]||{}, {text:ta.value, checked:true, grade:gr.dataset.grade});
+    save(); showResult(q); updateBars();
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.matches('textarea')){
+    const card=e.target.closest('.q'); const id=card.dataset.id;
+    store[id]=Object.assign(store[id]||{}, {text:e.target.value}); save();
+  }
+});
+init();
+</script>
